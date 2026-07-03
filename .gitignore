@@ -1,9 +1,0 @@
-__pycache__/
-*.pyc
-*.pyo
-db.sqlite3
-staticfiles/
-.env
-.vscode/
-.idea/
-*.log
