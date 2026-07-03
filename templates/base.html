@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFF8F3">
+<title>{% block title %}行木儿{% endblock %}</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+<a href="#main-content" class="skip-link">跳转到主内容</a>
+<nav class="navbar">
+  <div class="container">
+    <a href="{% url 'index' %}" class="navbar-brand"><span class="logo-icon">木</span> 行木儿</a>
+    <button class="hamburger" onclick="this.parentElement.classList.toggle('open')" aria-label="菜单"><span></span><span></span><span></span></button>
+    <div class="navbar-links">
+      <a href="{% url 'index' %}">首页</a>
+      <a href="{% url 'discover' %}">发现</a>
+      <a href="{% url 'plan' %}">我的规划{% if collection_count %}<span class="badge">{{ collection_count }}</span>{% endif %}</a>
+      <a href="{% url 'trips' %}">我的行程</a>
+      <div class="nav-avatar">{% if user.is_authenticated %}{{ user.username|first }}{% else %}游{% endif %}</div>
+    </div>
+  </div>
+</nav>
+<main id="main-content">{% block content %}{% endblock %}</main>
+<footer style="border-top:1px solid var(--border-light);padding:var(--space-lg) 0;text-align:center;">
+  <p class="text-subtle" style="font-size:0.8125rem;">行木儿 · 让每次出发都胸有成竹</p>
+</footer>
+<script>window._AMapSecurityConfig={securityJsCode:'{{ AMAP_JS_SECRET }}'};</script>
+<script src="https://webapi.amap.com/maps?v=2.0&key={{ AMAP_JS_KEY }}&plugin=AMap.Driving,AMap.Geocoder"></script>
+<div id="toast" class="toast" style="display:none;"></div>
+<script>function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(function(){t.style.display='none'},2000);}</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

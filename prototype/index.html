@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFF8F3">
+<title>行木儿 — 规划你的旅行</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">跳转到主内容</a>
+
+<!-- ====== Navbar ====== -->
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="navbar-brand">
+      <span class="logo-icon">木</span>
+      行木儿
+    </a>
+    <button class="hamburger" onclick="this.parentElement.classList.toggle('open')" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="navbar-links">
+      <a href="index.html" class="active">首页</a>
+      <a href="search.html">发现</a>
+      <a href="plan.html">我的规划 <span class="badge">3</span></a>
+      <a href="trips.html">我的行程</a>
+      <div class="nav-avatar" title="小王">王</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ====== Hero + Search ====== -->
+<main id="main-content">
+<section class="hero">
+  <div class="hero-content">
+
+    <h1>出发前的准备，<br>从这里开始就够了</h1>
+    <p class="lead">不用在十个 App 之间来回切换——搜城市、勾景点、搞定住宿选址和路线，一气呵成。</p>
+
+    <!-- Search box -->
+    <label for="searchInput" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">搜索城市或自然语言</label>
+    <div class="search-box" style="margin-bottom: var(--space-md);">
+      <span class="search-mode" id="searchModeToggle" onclick="toggleSearchMode()" title="切换搜索模式">
+        🔍 城市搜
+      </span>
+      <input type="text" id="searchInput" placeholder="输入城市名，如：三亚">
+      <button class="search-btn" onclick="doSearch()">→</button>
+    </div>
+
+    <!-- Agent chip bar -->
+    <div id="agentChips" style="display:none; text-align: left; margin-bottom: var(--space-md);">
+      <div style="display:flex; gap: var(--space-xs); flex-wrap: wrap; align-items: center;">
+        <span class="text-subtle">约束标签：</span>
+        <span class="agent-chip active">上海周边 <span class="remove">×</span></span>
+        <span class="agent-chip active">高铁2h内 <span class="remove">×</span></span>
+        <span class="agent-chip active">适合爬山 <span class="remove">×</span></span>
+        <span class="agent-chip" style="cursor:default;opacity:0.5;">+ 添加</span>
+      </div>
+    </div>
+
+    <!-- Quick city picks -->
+    <div style="display:flex; gap: var(--space-sm); flex-wrap: wrap; justify-content: center;">
+      <span class="text-subtle">试试：</span>
+      <a href="#" class="tag" onclick="quickSearch('三亚'); return false;">三亚</a>
+      <a href="#" class="tag" onclick="quickSearch('成都'); return false;">成都</a>
+      <a href="#" class="tag" onclick="quickSearch('大理'); return false;">大理</a>
+      <a href="#" class="tag" onclick="quickSearch('西安'); return false;">西安</a>
+      <a href="#" class="tag" onclick="quickSearch('厦门'); return false;">厦门</a>
+      <a href="#" class="tag" onclick="quickSearch('重庆'); return false;">重庆</a>
+    </div>
+
+  </div>
+</section>
+    </div>
+
+  </div>
+</section>
+
+<!-- ====== Popular Cities Bento ====== -->
+<section style="padding-bottom: var(--space-3xl);">
+  <div class="container">
+    <div class="section-header">
+      <h2>热门目的地</h2>
+      <a href="#" style="font-size:0.875rem;">查看全部 →</a>
+    </div>
+    <div class="bento-grid bento-3">
+      <!-- Sanya -->
+      <div class="city-card" onclick="quickSearch('三亚')">
+        <img class="city-card-img" src="images/sanyaa.jpg" alt="三亚海滩" loading="lazy">
+        <div class="city-card-body">
+          <h3>三亚</h3>
+          <p class="text-subtle">海滩 · 海岛 · 热带风情</p>
+        </div>
+      </div>
+      <!-- Chengdu -->
+      <div class="city-card" onclick="quickSearch('成都')">
+        <img class="city-card-img" src="images/chengdu.jpg" alt="成都街景" loading="lazy">
+        <div class="city-card-body">
+          <h3>成都</h3>
+          <p class="text-subtle">美食 · 茶馆 · 慢生活</p>
+        </div>
+      </div>
+      <!-- Dali -->
+      <div class="city-card" onclick="quickSearch('大理')">
+        <img class="city-card-img" src="images/dali.jpg" alt="大理洱海" loading="lazy">
+        <div class="city-card-body">
+          <h3>大理</h3>
+          <p class="text-subtle">洱海 · 苍山 · 古城慢时光</p>
+        </div>
+      </div>
+      <!-- Xi'an -->
+      <div class="city-card" onclick="quickSearch('西安')">
+        <img class="city-card-img" src="images/xian.jpg" alt="西安古城墙" loading="lazy">
+        <div class="city-card-body">
+          <h3>西安</h3>
+          <p class="text-subtle">古都 · 兵马俑 · 碳水天堂</p>
+        </div>
+      </div>
+      <!-- Xiamen -->
+      <div class="city-card" onclick="quickSearch('厦门')">
+        <img class="city-card-img" src="images/xiamen.jpg" alt="厦门鼓浪屿" loading="lazy">
+        <div class="city-card-body">
+          <h3>厦门</h3>
+          <p class="text-subtle">鼓浪屿 · 文艺 · 海风骑⾏</p>
+        </div>
+      </div>
+      <!-- Chongqing -->
+      <div class="city-card" onclick="quickSearch('重庆')">
+        <img class="city-card-img" src="images/chongqing.jpg" alt="重庆洪崖洞夜景" loading="lazy">
+        <div class="city-card-body">
+          <h3>重庆</h3>
+          <p class="text-subtle">8D魔幻 · 火锅 · 洪崖洞</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Theme Inspirations (Free-spirit entry) ====== -->
+<section style="padding-bottom: var(--space-2xl);">
+  <div class="container">
+    <div class="section-header">
+      <h2>没有计划？看看这些灵感</h2>
+      <a href="theme.html" style="font-size:0.875rem;">更多主题 →</a>
+    </div>
+    <div class="bento-grid bento-3">
+      <div class="city-card" onclick="window.location.href='theme.html'">
+        <img class="city-card-img" src="images/chengdu.jpg" alt="老茶馆地图" loading="lazy">
+        <div class="city-card-body">
+          <h3>🍵 老茶馆地图</h3>
+          <p class="text-subtle">成都 · 11家本地人常去的老茶馆</p>
+        </div>
+      </div>
+      <div class="city-card" onclick="window.location.href='theme.html'">
+        <img class="city-card-img" src="images/xiamen.jpg" alt="菜市场漫游" loading="lazy">
+        <div class="city-card-body">
+          <h3>🥬 菜市场漫游</h3>
+          <p class="text-subtle">厦门 · 5个值得逛的菜市+周边小吃</p>
+        </div>
+      </div>
+      <div class="city-card" onclick="window.location.href='theme.html'">
+        <img class="city-card-img" src="images/dali.jpg" alt="河边发呆指南" loading="lazy">
+        <div class="city-card-body">
+          <h3>🌿 洱海边发呆指南</h3>
+          <p class="text-subtle">大理 · 适合坐一下午的地方</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== How It Works ====== -->
+<section style="padding-bottom: var(--space-3xl); border-top: 1px solid var(--border-light); padding-top: var(--space-2xl);">
+  <div class="container" style="max-width: 800px;">
+    <div class="section-header" style="justify-content: center;">
+      <h2>从想法到出发</h2>
+    </div>
+    <div class="step-grid">
+      <div>
+        <div class="step-icon">🔍</div>
+        <h3>搜城市，勾景点</h3>
+        <p class="text-muted text-sm">Agent 自然语言也能搜——"周末上海周边爬山"</p>
+      </div>
+      <div>
+        <div class="step-icon">📍</div>
+        <h3>分析住宿选址</h3>
+        <p class="text-muted text-sm">基于你选的地点，自动推荐最省交通成本的住宿区域</p>
+      </div>
+      <div>
+        <div class="step-icon">📱</div>
+        <h3>生成路线，导出手机</h3>
+        <p class="text-muted text-sm">紧凑型还是随心走？都行。扫码保存，离线也能看</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ====== Footer ====== -->
+<footer style="border-top: 1px solid var(--border-light); padding: var(--space-lg) 0; text-align: center;">
+  <p class="text-subtle" style="font-size:0.8125rem;">行木儿 · 让每次出发都胸有成竹</p>
+</footer>
+
+<!-- ====== Script ====== -->
+<script>
+let searchMode = 'city'; // 'city' | 'nl'
+
+function toggleSearchMode() {
+  searchMode = searchMode === 'city' ? 'nl' : 'city';
+  const toggle = document.getElementById('searchModeToggle');
+  const input   = document.getElementById('searchInput');
+  const chips   = document.getElementById('agentChips');
+
+  if (searchMode === 'nl') {
+    toggle.innerHTML = '🤖 AI搜';
+    input.placeholder = '用自然语言描述，如：周末两天上海出发高铁两小时适合爬山';
+    chips.style.display = 'block';
+  } else {
+    toggle.innerHTML = '🔍 城市搜';
+    input.placeholder = '输入城市名，如：三亚';
+    chips.style.display = 'none';
+  }
+}
+
+function quickSearch(q) {
+  document.getElementById('searchInput').value = q;
+  doSearch();
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) {
+    document.getElementById('searchInput').focus();
+    return;
+  }
+  if (searchMode === 'nl') {
+    alert('Agent 搜索：「' + q + '」\n（原型演示：将跳转到搜索结果页）');
+  } else {
+    window.location.href = 'city-list.html?city=' + encodeURIComponent(q);
+  }
+}
+
+// Enter key triggers search
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doSearch();
+});
+</script>
+
+</body>
+</html>

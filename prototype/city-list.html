@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFF8F3">
+<title>三亚景点 — 行木儿</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .filter-bar {
+    display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center;
+    margin-bottom: var(--space-lg); padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .filter-bar .chip {
+    padding: 6px 14px; border-radius: 20px; font-size: 0.8125rem; font-weight: 500;
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-muted);
+    cursor: pointer; font-family: var(--font); transition: all 0.15s;
+  }
+  .filter-bar .chip:hover { border-color: var(--ink-subtle); }
+  .filter-bar .chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .filter-bar .sort-select {
+    margin-left: auto; height: 34px; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 0 var(--space-md); font-size: 0.8125rem; font-family: var(--font);
+    color: var(--ink); background: var(--surface); cursor: pointer; outline: none;
+  }
+  .quick-collect {
+    width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; font-size: 1.125rem; display: flex;
+    align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0;
+    color: var(--ink-muted);
+  }
+  .quick-collect:hover { border-color: var(--accent); color: var(--accent); }
+  .quick-collect.collected { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .city-hero {
+    margin-bottom: var(--space-lg);
+  }
+  .city-hero h1 { display: flex; align-items: center; gap: var(--space-sm); }
+  .result-count { font-size: 0.875rem; color: var(--ink-muted); margin-top: var(--space-xs); }
+  @media (max-width: 768px) {
+    .filter-bar .sort-select { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">跳转到主内容</a>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="navbar-brand"><span class="logo-icon">木</span> 行木儿</a>
+    <button class="hamburger" onclick="this.parentElement.classList.toggle('open')" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="navbar-links">
+      <a href="index.html">首页</a>
+      <a href="search.html" class="active">发现</a>
+      <a href="plan.html">我的规划 <span class="badge" id="planBadge">3</span></a>
+      <a href="trips.html">我的行程</a>
+      <div class="nav-avatar" title="小王">王</div>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<div class="container" style="padding-top: var(--space-md); padding-bottom: 0;">
+  <p class="text-sm" style="color: var(--ink-subtle);">
+    <a href="index.html">首页</a> ›
+    <span style="color: var(--ink-muted);">三亚</span>
+  </p>
+</div>
+
+<section style="padding-top: var(--space-lg); padding-bottom: var(--space-2xl);">
+  <div class="container">
+
+    <div class="city-hero">
+      <h1>三亚 <span style="font-size:1.25rem;font-weight:400;">🏖️</span></h1>
+      <p class="result-count">共找到 <strong>3</strong> 个景点 &nbsp;<span class="text-subtle text-sm">2个热门 + 1个小众推荐</span></p>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <button class="chip active" onclick="filterChip(this)">全部</button>
+      <button class="chip" onclick="filterChip(this)">海滩</button>
+      <button class="chip" onclick="filterChip(this)">海岛</button>
+      <button class="chip" onclick="filterChip(this)">人文</button>
+      <button class="chip" onclick="filterChip(this)">自然风光</button>
+      <span class="text-sm text-muted" style="margin-left: auto; margin-right: var(--space-sm);">排序：</span>
+      <select class="sort-select" onchange="resort(this.value)">
+        <option value="hot">🔥 综合热度</option>
+        <option value="rating">⭐ 评分最高</option>
+        <option value="cold">🌿 冷门优先</option>
+      </select>
+    </div>
+
+    <!-- POI List -->
+    <div style="display:flex; flex-direction:column; gap: var(--space-md);">
+
+      <!-- POI 1: 天涯海角 [大众] -->
+      <div class="poi-card" onclick="window.location.href='poi-detail.html'">
+        <img class="poi-card-img" src="images/sanyaa.jpg" alt="天涯海角" loading="lazy">
+        <div class="poi-card-info">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <h3>天涯海角 <span class="tag tag-gold" style="font-size:0.6875rem;">大众</span></h3>
+              <div class="meta">
+                <span style="color: var(--amber);">⭐ 4.3</span>
+                <span class="text-muted text-sm">三亚市天涯区</span>
+              </div>
+            </div>
+            <button class="quick-collect collected" onclick="event.stopPropagation(); toggleCollect(this)" title="已收藏">♥</button>
+          </div>
+          <div class="tags" style="margin-top: var(--space-sm);">
+            <span class="tag">海滩</span>
+            <span class="tag">自然风光</span>
+            <span class="tag">建议 2-3h</span>
+          </div>
+          <div style="margin-top: var(--space-sm);">
+            <span class="tip-source user" style="font-size:0.75rem;">✍️ "下午4点后半价票，人少拍照好"</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- POI 2: 蜈支洲岛 [大众] -->
+      <div class="poi-card" onclick="window.location.href='poi-detail.html'">
+        <img class="poi-card-img" src="images/sanyaa.jpg" alt="蜈支洲岛" loading="lazy">
+        <div class="poi-card-info">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <h3>蜈支洲岛 <span class="tag tag-gold" style="font-size:0.6875rem;">大众</span></h3>
+              <div class="meta">
+                <span style="color: var(--amber);">⭐ 4.5</span>
+                <span class="text-muted text-sm">海棠区</span>
+              </div>
+            </div>
+            <button class="quick-collect collected" onclick="event.stopPropagation(); toggleCollect(this)" title="已收藏">♥</button>
+          </div>
+          <div class="tags" style="margin-top: var(--space-sm);">
+            <span class="tag">海岛</span>
+            <span class="tag tag-green">需预约</span>
+            <span class="tag">建议 4-6h</span>
+          </div>
+          <div style="margin-top: var(--space-sm);">
+            <span class="tip-source user" style="font-size:0.75rem;">✍️ "一定要提前一天预约，现场买不到票"</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- POI 3: 后海村 [小众] -->
+      <div class="poi-card" onclick="window.location.href='poi-detail.html'">
+        <img class="poi-card-img" src="images/sanyaa.jpg" alt="后海村" loading="lazy">
+        <div class="poi-card-info">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <h3>后海村 <span class="tag tag-green" style="font-size:0.6875rem;">小众</span></h3>
+              <div class="meta">
+                <span style="color: var(--amber);">⭐ 4.0</span>
+                <span class="text-muted text-sm">海棠区 · 蜈支洲岛码头旁</span>
+              </div>
+            </div>
+            <button class="quick-collect" onclick="event.stopPropagation(); toggleCollect(this)" title="收藏">♡</button>
+          </div>
+          <div class="tags" style="margin-top: var(--space-sm);">
+            <span class="tag">渔村</span>
+            <span class="tag">冲浪</span>
+            <span class="tag">夜市</span>
+            <span class="tag">建议 2-3h</span>
+          </div>
+          <div style="margin-top: var(--space-sm);">
+            <span class="tip-source user" style="font-size:0.75rem;">✍️ "本地人爱去的冲浪小渔村，晚上烧烤摊绝了"</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom CTA -->
+    <div style="display:flex; justify-content:center; gap: var(--space-md); margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--border-light);">
+      <button class="btn btn-primary" onclick="window.location.href='plan.html'">
+        📋 查看我的规划（<span id="collectCount">3</span>个景点）
+      </button>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer style="border-top: 1px solid var(--border-light); padding: var(--space-lg) 0; text-align: center;">
+  <p class="text-subtle" style="font-size:0.8125rem;">行木儿 · 让每次出发都胸有成竹</p>
+</footer>
+
+<div id="toast" class="toast" style="display:none;"></div>
+
+<script>
+let collectCount = 3;
+
+function filterChip(chip) {
+  document.querySelectorAll('.filter-bar .chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  showToast('已筛选：「' + chip.textContent + '」（原型示意）');
+}
+
+function resort(by) {
+  const labels = { hot: '综合热度', rating: '评分最高', cold: '冷门优先' };
+  showToast('已按「' + labels[by] + '」排序（原型示意）');
+}
+
+function toggleCollect(btn) {
+  const isCollected = btn.classList.toggle('collected');
+  collectCount += isCollected ? 1 : -1;
+  btn.innerHTML = isCollected ? '♥' : '♡';
+  btn.title = isCollected ? '已收藏' : '收藏';
+  document.getElementById('collectCount').textContent = Math.max(collectCount, 0);
+  document.getElementById('planBadge').textContent = Math.max(collectCount, 0);
+  showToast(isCollected ? '已加入规划' : '已取消收藏');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(function(){ t.style.display = 'none'; }, 1800);
+}
+
+// Load city from URL param
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var city = params.get('city');
+  if (city) {
+    document.querySelector('.city-hero h1').textContent = city;
+    document.title = city + '景点 — 行木儿';
+  }
+})();
+</script>
+
+</body>
+</html>

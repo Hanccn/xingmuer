@@ -1,0 +1,80 @@
+{% extends "base.html" %}{% load static %}
+{% block title %}{{ city_name }}景点 — 行木儿{% endblock %}
+{% block extra_head %}
+<style>
+.filter-bar{display:flex;gap:var(--space-sm);flex-wrap:wrap;margin-bottom:var(--space-lg);padding-bottom:var(--space-md);border-bottom:1px solid var(--border-light);}
+.filter-bar .chip{padding:6px 14px;border-radius:20px;font-size:0.8125rem;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--ink-muted);cursor:pointer;}
+.filter-bar .chip.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.poi-card{display:flex;gap:var(--space-md);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:var(--space-md);margin-bottom:var(--space-md);cursor:pointer;transition:border-color 0.15s;}
+.poi-card:hover{border-color:var(--accent);}
+.poi-card-img{width:110px;height:110px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0;background:var(--border-light);}
+.poi-card-info{flex:1;min-width:0;}
+.quick-collect{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:1.125rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink-muted);}
+.quick-collect.collected{background:var(--accent);color:#fff;border-color:var(--accent);}
+</style>
+{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:var(--space-md);"><p class="text-sm" style="color:var(--ink-subtle);"><a href="/">首页</a> › {{ city_name }}</p></div>
+<section style="padding:var(--space-lg) 0 var(--space-2xl);"><div class="container">
+  <h1 style="margin-bottom:var(--space-xs);">{{ city_name }}</h1>
+  <p class="result-count text-muted text-sm">共找到 <strong>{{ pois.count }}</strong> 个景点</p>
+  <div class="filter-bar" style="margin-top:var(--space-sm);align-items:center;">
+    <button class="chip active" onclick="filter(this)">全部</button>
+    <button class="chip" onclick="filter(this)">海滩</button>
+    <button class="chip" onclick="filter(this)">海岛</button>
+    <button class="chip" onclick="filter(this)">人文</button>
+    <span style="margin-left:auto;display:flex;gap:4px;">
+      <button class="chip active" id="listToggle" onclick="switchView('list')">📋 列表</button>
+      <button class="chip" id="mapToggle" onclick="switchView('map')">🗺️ 地图</button>
+    </span>
+  </div>
+  <div id="listView">
+  {% for p in pois %}
+  <div class="poi-card" onclick="location.href='{% url 'poi_detail' p.id %}'">
+    <img class="poi-card-img" src="{% static 'images/sanyaa.jpg' %}" alt="{{ p.name }}" loading="lazy">
+    <div class="poi-card-info">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div><h3>{{ p.name }}</h3><div style="display:flex;gap:var(--space-sm);align-items:center;"><span style="color:var(--gold);">⭐ {{ p.rating|floatformat:1 }}</span><span class="text-muted text-sm">{{ p.address }}</span></div></div>
+        <button class="quick-collect" onclick="event.stopPropagation();this.classList.toggle('collected')" title="收藏">♥</button>
+      </div>
+      <div style="display:flex;gap:var(--space-xs);margin-top:var(--space-sm);flex-wrap:wrap;">
+        {% for t in p.tags %}<span class="tag">{{ t }}</span>{% endfor %}
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty-state"><div class="empty-icon">🔍</div><p class="text-muted">该城市暂无景点数据，正在从高德同步…</p></div>
+  {% endfor %}
+  </div>
+  <div id="mapView" style="display:none;"><div id="cityMap" style="width:100%;height:450px;border-radius:var(--radius);"></div></div>
+  <div style="text-align:center;margin-top:var(--space-xl);">
+    <a href="{% url 'plan' %}" class="btn btn-primary">📋 查看我的规划</a>
+  </div>
+</div></section>
+{% endblock %}
+{% block extra_js %}
+<script>
+function filter(b){document.querySelectorAll('.filter-bar .chip').forEach(function(c){c.classList.remove('active')});b.classList.add('active');}
+var view='list';
+function switchView(v){
+  view=v;
+  document.getElementById('listView').style.display=v==='list'?'block':'none';
+  document.getElementById('mapView').style.display=v==='map'?'block':'none';
+  document.getElementById('listToggle').classList.toggle('active',v==='list');
+  document.getElementById('mapToggle').classList.toggle('active',v==='map');
+  if(v==='map'&&!window._cityMapInited){initCityMap();}
+}
+var _cityMapInited=false;
+function initCityMap(){
+  _cityMapInited=true;
+  var pois=[{% for p in pois %}{lng:{{ p.lng }},lat:{{ p.lat }},name:'{{ p.name|escapejs }}',id:{{ p.id }}}{% if not forloop.last %},{% endif %}{% endfor %}];
+  if(!pois.length)return;
+  var m=new AMap.Map('cityMap',{zoom:12,center:[pois[0].lng,pois[0].lat]});
+  pois.forEach(function(p){
+    var mk=new AMap.Marker({position:[p.lng,p.lat],title:p.name});m.add(mk);
+    mk.on('click',function(){location.href='/poi/'+p.id+'/';});
+  });
+  m.setFitView();
+}
+</script>
+{% endblock %}

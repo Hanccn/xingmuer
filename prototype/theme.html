@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFF8F3">
+<title>老茶馆地图 — 行木儿</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .theme-hero {
+    margin-bottom: var(--space-lg);
+  }
+  .theme-hero h1 { margin-bottom: var(--space-xs); display: flex; align-items: center; gap: var(--space-sm); }
+  .theme-hero .theme-desc { font-size: 1rem; color: var(--ink-muted); max-width: 560px; }
+  .theme-poi-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; box-shadow: var(--shadow-card); cursor: pointer; transition: border-color 0.2s;
+    display: flex; flex-direction: column;
+  }
+  .theme-poi-card:hover { border-color: var(--ink-subtle); }
+  .theme-poi-card-img {
+    width: 100%; height: 180px; object-fit: cover; background: var(--border-light);
+  }
+  .theme-poi-card-body { padding: var(--space-md); flex: 1; display: flex; flex-direction: column; }
+  .theme-poi-card-body h3 { margin-bottom: 4px; font-size: 1rem; }
+  .theme-poi-card-body .meta { display: flex; gap: var(--space-sm); align-items: center; flex-wrap: wrap; }
+  .theme-poi-card-body .tip-preview { font-size: 0.8125rem; color: var(--ink-muted); margin-top: var(--space-sm); line-height: 1.5; }
+  .theme-poi-card-body .tip-preview::before { content: '💬 '; }
+  .quick-collect {
+    width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; font-size: 1.125rem; display: flex;
+    align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0;
+    color: var(--ink-muted); margin-left: auto; margin-top: auto;
+  }
+  .quick-collect:hover { border-color: var(--accent); color: var(--accent); }
+  .quick-collect.collected { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .view-switch { display: flex; gap: var(--space-sm); }
+  .view-switch button {
+    padding: 6px 14px; border-radius: 20px; font-size: 0.8125rem; font-weight: 500;
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-muted);
+    cursor: pointer; font-family: var(--font); transition: all 0.15s;
+  }
+  .view-switch button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .tip-bar {
+    font-size: 0.75rem; color: var(--ink-subtle); text-align: center; margin-top: var(--space-xl);
+    padding-top: var(--space-lg); border-top: 1px solid var(--border-light);
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">跳转到主内容</a>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="navbar-brand"><span class="logo-icon">木</span> 行木儿</a>
+    <button class="hamburger" onclick="this.parentElement.classList.toggle('open')" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="navbar-links">
+      <a href="index.html" class="active">首页</a>
+      <a href="search.html">发现</a>
+      <a href="plan.html">我的规划</a>
+      <a href="trips.html">我的行程</a>
+      <div class="nav-avatar" title="小陈">陈</div>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<div class="container" style="padding-top: var(--space-md); padding-bottom: 0;">
+  <p class="text-sm" style="color: var(--ink-subtle);">
+    <a href="index.html">首页</a> ›
+    <span style="color: var(--ink-muted);">老茶馆地图</span>
+  </p>
+</div>
+
+<section style="padding-top: var(--space-lg); padding-bottom: var(--space-2xl);">
+  <div class="container">
+
+    <div class="theme-hero">
+      <h1>🍵 老茶馆地图 <span style="font-size:0.875rem;font-weight:400;color:var(--ink-muted);">11 家</span></h1>
+      <p class="theme-desc">成都本地人常去的老茶馆，竹椅、盖碗、龙门阵。每一家都是慢下来的理由。</p>
+    </div>
+
+    <div class="flex-between" style="margin-bottom: var(--space-lg);">
+      <div class="view-switch" id="viewSwitch">
+        <button class="active" onclick="switchView('card')">📷 卡片</button>
+        <button onclick="switchView('map')">🗺️ 地图分布</button>
+      </div>
+      <span class="text-sm text-muted">不设路线，选你感兴趣的，看地图集中在哪</span>
+    </div>
+
+    <!-- Card View -->
+    <div id="cardView">
+      <div class="bento-grid bento-3">
+
+        <!-- 鹤鸣茶社 -->
+        <div class="theme-poi-card" onclick="window.location.href='poi-detail.html'">
+          <img class="theme-poi-card-img" src="images/chengdu.jpg" alt="鹤鸣茶社" loading="lazy">
+          <div class="theme-poi-card-body">
+            <h3>鹤鸣茶社</h3>
+            <div class="meta">
+              <span style="color:var(--amber);">⭐ 4.4</span>
+              <span class="text-muted text-sm">人民公园内</span>
+            </div>
+            <p class="tip-preview">下午两点后靠湖的位置最好，别点套餐点单杯就行，38块坐一下午</p>
+            <button class="quick-collect" onclick="event.stopPropagation(); toggleCollect(this)" title="收藏">♡</button>
+          </div>
+        </div>
+
+        <!-- 大慈寺茶社 -->
+        <div class="theme-poi-card" onclick="window.location.href='poi-detail.html'">
+          <img class="theme-poi-card-img" src="images/chengdu.jpg" alt="大慈寺茶社" loading="lazy">
+          <div class="theme-poi-card-body">
+            <h3>大慈寺茶社</h3>
+            <div class="meta">
+              <span style="color:var(--amber);">⭐ 4.2</span>
+              <span class="text-muted text-sm">太古里旁边</span>
+            </div>
+            <p class="tip-preview">太古里逛累了走两步就到，藏在千年古寺里的茶馆，游客很少知道</p>
+            <button class="quick-collect" onclick="event.stopPropagation(); toggleCollect(this)" title="收藏">♡</button>
+          </div>
+        </div>
+
+        <!-- 彭镇老茶馆 -->
+        <div class="theme-poi-card" onclick="window.location.href='poi-detail.html'">
+          <img class="theme-poi-card-img" src="images/chengdu.jpg" alt="彭镇老茶馆" loading="lazy">
+          <div class="theme-poi-card-body">
+            <h3>彭镇老茶馆</h3>
+            <div class="meta">
+              <span style="color:var(--amber);">⭐ 4.3</span>
+              <span class="text-muted text-sm">双流区彭镇</span>
+            </div>
+            <p class="tip-preview">百年老茶馆，地上坑洼是岁月踩出来的，拍照很有感觉</p>
+            <button class="quick-collect" onclick="event.stopPropagation(); toggleCollect(this)" title="收藏">♡</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Map View -->
+    <div id="mapView" style="display:none;">
+      <div class="bento-grid bento-2">
+        <div class="map-placeholder">
+          <span style="font-size:3rem;">🗺️</span>
+          <p class="text-muted">高德地图 — 茶馆分布</p>
+          <div style="text-align:left; font-size:0.8125rem; color:var(--ink-muted);">
+            <div>📍 鹤鸣茶社 — 青羊区</div>
+            <div>📍 大慈寺茶社 — 锦江区</div>
+            <div>📍 彭镇老茶馆 — 双流区</div>
+          </div>
+          <p class="text-subtle text-sm">收藏的茶馆集中在青羊+锦江区域</p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap: var(--space-sm);">
+          <div class="card" style="padding:var(--space-md);">
+            <h3 style="font-size:0.9375rem;">🍵 鹤鸣茶社</h3>
+            <span class="text-muted text-sm">青羊区 · 人民公园 · ⭐4.4</span>
+            <div style="margin-top:var(--space-sm);">
+              <button class="btn btn-outline btn-sm" onclick="window.location.href='poi-detail.html'">查看详情</button>
+            </div>
+          </div>
+          <div class="card" style="padding:var(--space-md);">
+            <h3 style="font-size:0.9375rem;">🍵 大慈寺茶社</h3>
+            <span class="text-muted text-sm">锦江区 · 太古里旁 · ⭐4.2</span>
+            <div style="margin-top:var(--space-sm);">
+              <button class="btn btn-outline btn-sm" onclick="window.location.href='poi-detail.html'">查看详情</button>
+            </div>
+          </div>
+          <div class="card" style="padding:var(--space-md);">
+            <h3 style="font-size:0.9375rem;">🍵 彭镇老茶馆</h3>
+            <span class="text-muted text-sm">双流区 · 百年老店 · ⭐4.3</span>
+            <div style="margin-top:var(--space-sm);">
+              <button class="btn btn-outline btn-sm" onclick="window.location.href='poi-detail.html'">查看详情</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="tip-bar">以上 Tips 来自公开平台和用户分享，仅供参考。不设路线——选你感兴趣的，在地图上看看集中在哪，直接去。</p>
+
+  </div>
+</section>
+
+</main>
+
+<footer style="border-top: 1px solid var(--border-light); padding: var(--space-lg) 0; text-align: center;">
+  <p class="text-subtle" style="font-size:0.8125rem;">行木儿 · 让每次出发都胸有成竹</p>
+</footer>
+
+<div id="toast" class="toast" style="display:none;"></div>
+
+<script>
+function switchView(v) {
+  document.getElementById('cardView').style.display = v === 'card' ? 'block' : 'none';
+  document.getElementById('mapView').style.display = v === 'map' ? 'block' : 'none';
+  document.querySelectorAll('#viewSwitch button').forEach(function(b, i) {
+    b.classList.toggle('active', (i === 0 && v === 'card') || (i === 1 && v === 'map'));
+  });
+}
+
+function toggleCollect(btn) {
+  var on = btn.classList.toggle('collected');
+  btn.innerHTML = on ? '♥' : '♡';
+  btn.title = on ? '已收藏' : '收藏';
+  showToast('添加到了「我的规划」');
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(function(){ t.style.display = 'none'; }, 1800);
+}
+</script>
+
+</body>
+</html>

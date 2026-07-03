@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFF8F3">
+<title>天涯海角 — 行木儿</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">跳转到主内容</a>
+
+<!-- ====== Navbar ====== -->
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="navbar-brand">
+      <span class="logo-icon">木</span>
+      行木儿
+    </a>
+    <button class="hamburger" onclick="this.parentElement.classList.toggle('open')" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="navbar-links">
+      <a href="index.html">首页</a>
+      <a href="search.html">发现</a>
+      <a href="plan.html" class="active">我的规划 <span class="badge">3</span></a>
+      <a href="trips.html">我的行程</a>
+      <div class="nav-avatar" title="小王">王</div>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- ====== Breadcrumb ====== -->
+<div class="container" style="padding-top: var(--space-md); padding-bottom: 0;">
+  <p class="text-sm" style="color: var(--ink-subtle);">
+    <a href="index.html">首页</a> &nbsp;›&nbsp;
+    <a href="city-list.html?city=三亚">三亚</a> &nbsp;›&nbsp;
+    <span style="color: var(--ink-muted);">天涯海角</span>
+  </p>
+</div>
+
+<!-- ====== POI Header ====== -->
+<section style="padding-top: var(--space-lg); padding-bottom: var(--space-lg);">
+  <div class="container">
+    <div class="bento-grid bento-2">
+
+      <!-- Left: image -->
+      <div style="background: linear-gradient(135deg, #DBEAFE 0%, #93C5FD 50%, #60A5FA 100%); border-radius: var(--radius); min-height: 280px; display:flex; align-items:center; justify-content:center; font-size:5rem;">
+        🏖️
+      </div>
+
+      <!-- Right: basic info + actions -->
+      <div style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div class="flex-between" style="align-items:baseline; margin-bottom: var(--space-sm);">
+            <h1 style="font-size: 2rem;">天涯海角</h1>
+            <button class="btn btn-outline btn-sm" id="collectBtn" onclick="toggleCollect()">
+              <span id="collectIcon">♡</span> <span id="collectText">收藏</span>
+            </button>
+          </div>
+          <div class="meta gap-md" style="display:flex; align-items:center; margin-bottom: var(--space-md);">
+            <span style="color: var(--amber); font-weight:600;">⭐ 4.3</span>
+            <span class="text-muted text-sm">📍 三亚市天涯区</span>
+          </div>
+
+          <!-- Structured info bento cards -->
+          <div class="bento-grid bento-2" style="margin-bottom: var(--space-md);">
+            <div class="card" style="padding: var(--space-md);">
+              <p class="text-subtle" style="font-size:0.75rem; margin-bottom:2px;">🕐 营业时间</p>
+              <p style="font-weight:500;">08:00 — 18:00</p>
+            </div>
+            <div class="card" style="padding: var(--space-md);">
+              <p class="text-subtle" style="font-size:0.75rem; margin-bottom:2px;">🎫 门票</p>
+              <p style="font-weight:500;">81 元（成人）</p>
+            </div>
+            <div class="card" style="padding: var(--space-md);">
+              <p class="text-subtle" style="font-size:0.75rem; margin-bottom:2px;">📏 建议停留</p>
+              <p style="font-weight:500;">2 – 3 小时</p>
+            </div>
+            <div class="card" style="padding: var(--space-md);">
+              <p class="text-subtle" style="font-size:0.75rem; margin-bottom:2px;">🔖 需要预约</p>
+              <p style="font-weight:500;">否</p>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div style="display:flex; gap: var(--space-xs); flex-wrap:wrap;">
+            <span class="tag tag-gold">海滩</span>
+            <span class="tag tag-gold">自然风光</span>
+            <span class="tag">经典必去</span>
+            <span class="tag">适合拍照</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ====== Tips Section ====== -->
+<section style="padding-bottom: var(--space-xl);">
+  <div class="container">
+    <div class="section-header">
+      <h2>旅行者这样说</h2>
+      <span class="text-subtle text-sm">随机展示 3 条，刷新换一批</span>
+    </div>
+
+    <!-- Tip 1: scraped -->
+    <div class="tip-item">
+      <div class="tip-body">
+      <p class="tip-content">"下午4点后半价票，人还少，拍照光线最好。记得从西门进离天涯石近。"</p>
+      <div class="tip-meta">
+        <span class="tip-source scraped">📋 来自小红书</span>
+        <div class="tip-feedback">
+          <button onclick="feedbackTip(this, 'useful')">👍 有用 <span>(23)</span></button>
+          <button onclick="feedbackTip(this, 'useless')">👎 无用 <span>(2)</span></button>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- Tip 2: user -->
+    <div class="tip-item">
+      <div class="tip-body">
+      <p class="tip-content">"门口的椰子30别买，往停车场方向走200米有个阿姨推车卖，10块一个还帮开。"</p>
+      <div class="tip-meta">
+        <span class="tip-source user">✍️ 匿名用户</span>
+        <div class="tip-feedback">
+          <button onclick="feedbackTip(this, 'useful')">👍 有用 <span>(8)</span></button>
+          <button onclick="feedbackTip(this, 'useless')">👎 无用 <span>(0)</span></button>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- Tip 3: user -->
+    <div class="tip-item">
+      <div class="tip-body">
+      <p class="tip-content">"去天涯石别走主路，右边礁石小道更出片，背景干净还没有路人入镜。"</p>
+      <div class="tip-meta">
+        <span class="tip-source user">✍️ 匿名用户</span>
+        <div class="tip-feedback">
+          <button onclick="feedbackTip(this, 'useful')">👍 有用 <span>(12)</span></button>
+          <button onclick="feedbackTip(this, 'useless')">👎 无用 <span>(1)</span></button>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- Write a tip -->
+    <div class="card" style="margin-top: var(--space-lg); padding: var(--space-md);">
+      <div style="display: flex; gap: var(--space-md); align-items: flex-start;">
+        <label for="tipInput" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">写一条旅行Tips（80字以内）</label>
+        <textarea id="tipInput" rows="2" maxlength="80"
+          placeholder="我也说一句…（≤80字，匿名发布）"
+          style="flex:1; border:1px solid var(--border); border-radius: var(--radius); padding: var(--space-sm) var(--space-md); font-family: var(--font); font-size: 0.9375rem; resize: none; outline: none; color: var(--ink); line-height:1.5;"
+          oninput="updateTipCount()"
+          onfocus="this.style.borderColor='var(--accent)'"
+          onblur="this.style.borderColor='var(--border)'"></textarea>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap: var(--space-sm); min-width: 80px;">
+          <span id="tipCount" style="font-size:0.8125rem; color: var(--ink-subtle);">0 / 80</span>
+          <button class="btn btn-primary btn-sm" onclick="submitTip()" style="width:100%;">发布</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Source note -->
+    <p style="margin-top: var(--space-md); font-size:0.75rem; color: var(--ink-subtle); text-align: center;">
+      以上部分 Tips 来自公开平台，仅供参考。真人贡献达到 5 条后自动隐藏。
+    </p>
+  </div>
+</section>
+
+<!-- ====== Map ====== -->
+<section style="padding-bottom: var(--space-2xl);">
+  <div class="container">
+    <div class="section-header">
+      <h2>位置</h2>
+    </div>
+    <div style="background: var(--border-light); border-radius: var(--radius); height: 320px; display:flex; align-items:center; justify-content:center; flex-direction: column; gap: var(--space-md); border:1px solid var(--border);">
+      <span style="font-size:3rem;">🗺️</span>
+      <p class="text-muted">高德地图 — 单点定位</p>
+      <p class="text-subtle text-sm">天涯海角 · 三亚市天涯区</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Nearby ====== -->
+<section style="padding-bottom: var(--space-3xl); border-top: 1px solid var(--border-light);">
+  <div class="container" style="padding-top: var(--space-2xl);">
+    <div class="section-header">
+      <h2>附近值得去</h2>
+      <a href="#" class="text-sm">查看全部 →</a>
+    </div>
+    <div class="bento-grid bento-4">
+      <div class="city-card" onclick="alert('跳转西岛详情')">
+        <div class="city-card-img" style="background:#E0F2FE; display:flex; align-items:center; justify-content:center; font-size:2rem;">🏝️</div>
+        <div class="city-card-body">
+          <h3 style="font-size:0.9375rem;">西岛</h3>
+          <p class="text-subtle">驾车 25 分钟</p>
+        </div>
+      </div>
+      <div class="city-card" onclick="alert('跳转南山寺详情')">
+        <div class="city-card-img" style="background:#FEF3C7; display:flex; align-items:center; justify-content:center; font-size:2rem;">🛕</div>
+        <div class="city-card-body">
+          <h3 style="font-size:0.9375rem;">南山寺</h3>
+          <p class="text-subtle">驾车 40 分钟</p>
+        </div>
+      </div>
+      <div class="city-card" onclick="alert('跳转鹿回头详情')">
+        <div class="city-card-img" style="background:#ECFDF5; display:flex; align-items:center; justify-content:center; font-size:2rem;">🦌</div>
+        <div class="city-card-body">
+          <h3 style="font-size:0.9375rem;">鹿回头</h3>
+          <p class="text-subtle">驾车 15 分钟</p>
+        </div>
+      </div>
+      <div class="city-card" onclick="alert('跳转第一市场详情')">
+        <div class="city-card-img" style="background:#FFF7ED; display:flex; align-items:center; justify-content:center; font-size:2rem;">🦞</div>
+        <div class="city-card-body">
+          <h3 style="font-size:0.9375rem;">第一市场</h3>
+          <p class="text-subtle">驾车 20 分钟</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ====== Toast ====== -->
+<div id="toast" class="toast" style="display:none;"></div>
+
+<!-- ====== Script ====== -->
+<script>
+let collected = false;
+
+function toggleCollect() {
+  collected = !collected;
+  const icon = document.getElementById('collectIcon');
+  const text = document.getElementById('collectText');
+  const btn  = document.getElementById('collectBtn');
+
+  if (collected) {
+    icon.textContent = '♥';
+    text.textContent = '已收藏';
+    btn.classList.remove('btn-outline');
+    btn.classList.add('btn-primary');
+    showToast('已加入「我的规划」');
+  } else {
+    icon.textContent = '♡';
+    text.textContent = '收藏';
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-outline');
+    showToast('已取消收藏');
+  }
+}
+
+function feedbackTip(btn, type) {
+  btn.style.color = 'var(--accent)';
+  btn.style.fontWeight = '600';
+  setTimeout(() => { btn.style.color = ''; btn.style.fontWeight = ''; }, 600);
+}
+
+function updateTipCount() {
+  const input = document.getElementById('tipInput');
+  const count = document.getElementById('tipCount');
+  const len = input.value.length;
+  count.textContent = len + ' / 80';
+  count.style.color = len > 80 ? 'var(--danger)' : len > 70 ? 'var(--warning)' : 'var(--ink-subtle)';
+}
+
+function submitTip() {
+  const input = document.getElementById('tipInput');
+  const val = input.value.trim();
+  if (!val) { showToast('请写点什么再发布'); return; }
+  if (val.length > 80) { showToast('不能超过 80 字哦'); return; }
+  showToast('感谢分享！你的 Tips 将在审核后展示 ✨');
+  input.value = '';
+  updateTipCount();
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 2000);
+}
+</script>
+
+</body>
+</html>

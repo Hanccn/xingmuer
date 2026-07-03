@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFF8F3">
+<title>路线结果 — 三亚3日游 — 行木儿</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .day-header {
+    font-size: 1.125rem; font-weight: 600; color: var(--ink);
+    padding: var(--space-sm) 0; margin-bottom: var(--space-md);
+    border-bottom: 2px solid var(--accent); display: flex; align-items: baseline; gap: var(--space-sm);
+  }
+  .day-header .day-label { color: var(--accent); }
+  .day-header .day-summary { font-size: 0.8125rem; color: var(--ink-muted); font-weight: 400; margin-left: auto; }
+  .route-stop {
+    display: flex; gap: var(--space-md); align-items: stretch; margin-bottom: 0; position: relative;
+  }
+  .route-stop:not(:last-child)::after {
+    content: ''; position: absolute; left: 15px; top: 44px;
+    width: 2px; height: calc(100% + var(--space-xs)); background: var(--border-light);
+    z-index: 0;
+  }
+  .route-stop .stop-dot {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    background: var(--surface); border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 600; color: var(--accent);
+    z-index: 1;
+  }
+  .route-stop .stop-dot.note {
+    border-color: var(--ink-subtle); color: var(--ink-subtle);
+  }
+  .route-stop .stop-card {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: var(--space-md);
+    margin-left: var(--space-md); margin-bottom: var(--space-xs);
+    box-shadow: var(--shadow-card); position: relative; z-index: 1;
+  }
+  .route-stop .transport {
+    font-size: 0.75rem; color: var(--ink-subtle);
+    padding: var(--space-xs) var(--space-md); margin-left: calc(32px + var(--space-md));
+  }
+  .share-qr {
+    width: 180px; height: 180px; background: var(--border-light);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius); margin: 0 auto var(--space-md);
+    border: 6px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center; z-index: var(--z-modal-bg);
+  }
+  .modal {
+    background: var(--surface); border-radius: var(--radius); padding: var(--space-xl);
+    max-width: 380px; width: 90%; text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">跳转到主内容</a>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="navbar-brand"><span class="logo-icon">木</span> 行木儿</a>
+    <button class="hamburger" onclick="this.parentElement.classList.toggle('open')" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="navbar-links">
+      <a href="index.html">首页</a>
+      <a href="search.html">发现</a>
+      <a href="plan.html">我的规划</a>
+      <a href="trips.html" class="active">我的行程</a>
+      <div class="nav-avatar" title="小王">王</div>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<!-- Breadcrumb -->
+<div class="container" style="padding-top: var(--space-md);">
+  <p class="text-sm" style="color: var(--ink-subtle);">
+    <a href="index.html">首页</a> › <a href="plan.html">我的规划</a> ›
+    <span style="color: var(--ink-muted);">三亚 3 日游</span>
+  </p>
+</div>
+
+<!-- ====== Route Header ====== -->
+<section style="padding-top: var(--space-lg); padding-bottom: var(--space-md);">
+  <div class="container">
+    <div class="flex-between" style="align-items:baseline; margin-bottom: var(--space-sm);">
+      <div>
+        <h1>三亚 3 日游</h1>
+        <p class="text-muted text-sm">住大东海 · 🚗 驾车 · 📅 紧凑型 · 3天3景点</p>
+      </div>
+      <div style="display:flex; gap: var(--space-sm);">
+        <button class="btn btn-outline btn-sm" onclick="window.location.href='plan.html'">← 返回调整</button>
+        <button class="btn btn-primary btn-sm" onclick="openShareModal()">📱 导出到手机</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Route Days ====== -->
+<section style="padding-bottom: var(--space-2xl);">
+  <div class="container">
+    <div class="bento-grid bento-2">
+
+      <!-- Left: Day itinerary cards -->
+      <div>
+
+        <!-- ====== Day 1 ====== -->
+        <div style="margin-bottom: var(--space-xl);">
+          <div class="day-header">
+            <span class="day-label">Day 1</span> 大东海 → 天涯海角
+            <span class="day-summary">3个停留 · 驾车约 30min</span>
+          </div>
+
+          <div class="route-stop">
+            <div class="stop-dot">1</div>
+            <div class="stop-card">
+              <div class="flex-between" style="align-items:baseline;">
+                <h3 style="font-size:0.9375rem;">🏨 大东海出发</h3>
+                <span class="text-subtle text-sm">09:00</span>
+              </div>
+              <p class="text-subtle text-sm">住宿区域</p>
+            </div>
+          </div>
+          <div class="transport">🚗 驾车 12 分钟 →</div>
+
+          <div class="route-stop">
+            <div class="stop-dot">2</div>
+            <div class="stop-card">
+              <div class="flex-between" style="align-items:baseline;">
+                <h3 style="font-size:0.9375rem;">🏖️ 天涯海角</h3>
+                <span class="text-subtle text-sm">09:15 — 12:00</span>
+              </div>
+              <div style="display:flex; gap: var(--space-xs); margin-top: var(--space-xs);">
+                <span class="tag tag-gold">景区</span>
+                <span class="tag">建议 2-3h</span>
+              </div>
+            </div>
+          </div>
+          <div class="transport">🚗 驾车 15 分钟 →</div>
+
+          <div class="route-stop">
+            <div class="stop-dot note">🍽</div>
+            <div class="stop-card">
+              <div class="flex-between" style="align-items:baseline;">
+                <h3 style="font-size:0.9375rem;">🥥 第一市场</h3>
+                <span class="text-subtle text-sm">12:15 — 13:30</span>
+              </div>
+              <div style="display:flex; gap: var(--space-xs); margin-top: var(--space-xs);">
+                <span class="tag">午餐</span>
+                <span class="tag tag-green">推荐海鲜</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== Day 2 ====== -->
+        <div style="margin-bottom: var(--space-xl);">
+          <div class="day-header">
+            <span class="day-label">Day 2</span> 蜈支洲岛深度游
+            <span class="day-summary">2个停留 · 驾车约 40min</span>
+          </div>
+
+          <div class="route-stop">
+            <div class="stop-dot">1</div>
+            <div class="stop-card">
+              <div class="flex-between" style="align-items:baseline;">
+                <h3 style="font-size:0.9375rem;">🏨 大东海出发</h3>
+                <span class="text-subtle text-sm">08:00</span>
+              </div>
+            </div>
+          </div>
+          <div class="transport">🚗 驾车 20 分钟 → 到蜈支洲岛码头</div>
+
+          <div class="route-stop">
+            <div class="stop-dot">2</div>
+            <div class="stop-card">
+              <div class="flex-between" style="align-items:baseline;">
+                <h3 style="font-size:0.9375rem;">🏝️ 蜈支洲岛</h3>
+                <span class="text-subtle text-sm">08:20 — 16:00</span>
+              </div>
+              <div style="display:flex; gap: var(--space-xs); margin-top: var(--space-xs);">
+                <span class="tag tag-gold">景区</span>
+                <span class="tag tag-green">需提前1天预约</span>
+                <span class="tag">建议 4-6h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== Day 3 ====== -->
+        <div>
+          <div class="day-header">
+            <span class="day-label">Day 3</span> 后海村慢游
+            <span class="day-summary">2个停留 · 驾车约 30min</span>
+          </div>
+
+          <div class="route-stop">
+            <div class="stop-dot">1</div>
+            <div class="stop-card">
+              <div class="flex-between" style="align-items:baseline;">
+                <h3 style="font-size:0.9375rem;">🏨 大东海出发</h3>
+                <span class="text-subtle text-sm">09:30</span>
+              </div>
+            </div>
+          </div>
+          <div class="transport">🚗 驾车 15 分钟 →</div>
+
+          <div class="route-stop">
+            <div class="stop-dot">2</div>
+            <div class="stop-card">
+              <div class="flex-between" style="align-items:baseline;">
+                <h3 style="font-size:0.9375rem;">🌊 后海村</h3>
+                <span class="text-subtle text-sm">09:45 — 15:00</span>
+              </div>
+              <div style="display:flex; gap: var(--space-xs); margin-top: var(--space-xs);">
+                <span class="tag tag-gold">海滩</span>
+                <span class="tag">建议 3-4h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Map + actions -->
+      <div style="position:sticky; top:72px; align-self:start;">
+        <div class="map-placeholder">
+          <span style="font-size:3rem;">🗺️</span>
+          <p class="text-muted">高德地图 — 路线预览</p>
+          <div style="text-align:left; font-size:0.8125rem; color: var(--ink-muted);">
+            <div>Day 1: 大东海 → 天涯海角 → 第一市场</div>
+            <div>Day 2: 大东海 → 蜈支洲岛</div>
+            <div>Day 3: 大东海 → 后海村</div>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top: var(--space-md);" onclick="alert('Agent 出发前检查（原型）：\n✅ 天涯海角正常开放\n⚠️ 蜈支洲岛需提前1天预约\n🌤️ 三亚明天 26°C 晴')">🔍 Agent 检查最新状态</button>
+        </div>
+
+        <!-- Agent check hint -->
+        <div class="card" style="margin-top: var(--space-md); padding: var(--space-md); background: var(--tint-blue);">\n          <p style="font-size:0.875rem; margin-bottom: var(--space-xs);">\n            <strong>🤖 Agent 自动检查</strong>\n          </p>
+          <p class="text-subtle text-sm" style="margin-bottom: var(--space-md);">
+            出发前 24 小时自动检查景点状态 + 天气 + 交通。当前状态：
+          </p>
+          <div style="font-size:0.8125rem;">
+            <div style="margin-bottom:2px;">✅ 天涯海角 — 正常开放</div>
+            <div style="margin-bottom:2px;">⚠️ 蜈支洲岛 — <span style="color:var(--warning);">需提前1天预约</span></div>
+            <div>✅ 后海村 — 正常开放</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ====== Share Modal ====== -->
+<div id="shareModal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="导出到手机" onclick="closeShareModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h2 style="margin-bottom: var(--space-sm);">📱 导出到手机</h2>
+    <p class="text-muted text-sm" style="margin-bottom: var(--space-lg);">扫码或复制链接，在手机上打开后添加至主屏幕</p>
+
+    <div class="share-qr">
+      <span style="font-size:5rem;">📱</span>
+    </div>
+    <button class="btn btn-outline" style="width:100%; margin-bottom: var(--space-sm);" onclick="copyShareLink()">
+      📋 复制链接
+    </button>
+    <p class="text-subtle text-sm">分享码：<strong style="color:var(--ink); letter-spacing:2px;">8A3K2P</strong> &nbsp;（24h 有效）</p>
+    <p style="font-size:0.75rem; color: var(--ink-subtle); margin-top: var(--space-md);">
+      手机打开后点击「添加到主屏幕」<br>此后离线也能查看已保存的行程
+    </p>
+
+    <button class="btn btn-ghost btn-sm" style="margin-top: var(--space-md);" onclick="document.getElementById('shareModal').style.display='none'">关闭</button>
+  </div>
+</div>
+
+<div id="toast" class="toast" style="display:none;"></div>
+
+<script>
+function openShareModal() {
+  document.getElementById('shareModal').style.display = 'flex';
+}
+function closeShareModal(e) {
+  if (e && e.target.id !== 'shareModal') return;
+  document.getElementById('shareModal').style.display = 'none';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var m = document.getElementById('shareModal');
+    if (m.style.display === 'flex') { m.style.display = 'none'; }
+  }
+});
+function copyShareLink() {
+  showToast('链接已复制：xingmuer.app/trip/8A3K2P');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2000);
+}
+</script>
+</body>
+</html>

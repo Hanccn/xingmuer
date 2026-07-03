@@ -1,0 +1,11 @@
+{% load static %}
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>分享已过期 — 行木儿</title><link rel="stylesheet" href="{% static 'css/style.css' %}"></head>
+<body style="display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;">
+<div class="card" style="max-width:400px;padding:var(--space-2xl);">
+  <div style="font-size:4rem;">⏰</div>
+  <h2 style="margin-top:var(--space-md);">分享已过期</h2>
+  <p class="text-muted text-sm" style="margin-top:var(--space-sm);">这段行程的分享链接在 {{ trip.share_expires_at|date:"m-d H:i" }} 已失效。<br>请联系分享者重新生成。</p>
+  <a href="/" class="btn btn-primary btn-sm" style="margin-top:var(--space-lg);">返回首页</a>
+</div>
+</body>
+</html>

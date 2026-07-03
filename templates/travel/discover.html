@@ -1,0 +1,42 @@
+{% extends "base.html" %}{% load static %}
+{% block title %}发现 — 行木儿{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:var(--space-md);"><p class="text-sm" style="color:var(--ink-subtle);"><a href="/">首页</a> › 发现</p></div>
+<section style="padding:var(--space-lg) 0 var(--space-xl);"><div class="container">
+  <h1>今天想去哪儿？</h1>
+  <p class="text-muted">不知道目的地？按你想玩的方式来找灵感。</p>
+</div></section>
+<section style="padding-bottom:var(--space-xl);"><div class="container">
+  <div class="section-header"><h2>按玩法发现</h2></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:var(--space-sm);">
+    {% for item in categories %}
+    <div class="category-chip" onclick="location.href='{{ item.link }}'" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:var(--space-md);border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);cursor:pointer;">
+      <span style="font-size:1.75rem;">{{ item.icon }}</span><span style="font-size:0.8125rem;font-weight:500;">{{ item.label }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div></section>
+<section style="padding-bottom:var(--space-xl);"><div class="container">
+  <div class="section-header"><h2>大家最近在搜</h2></div>
+  <div class="bento-grid bento-3">
+    {% for t in trending %}
+    <div class="trending-item" onclick="location.href='{{ t.link }}'" style="display:flex;align-items:center;gap:var(--space-sm);padding:var(--space-sm) var(--space-md);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;">
+      <span style="font-weight:700;color:var(--ink-subtle);width:20px;">{{ forloop.counter }}</span>
+      <img src="{% static t.image %}" style="width:44px;height:44px;border-radius:6px;object-fit:cover;" loading="lazy">
+      <div><h3 style="font-size:0.9375rem;">{{ t.name }}</h3><span class="text-subtle" style="font-size:0.75rem;">{{ t.tag }}</span></div>
+    </div>
+    {% endfor %}
+  </div>
+</div></section>
+<section style="padding-bottom:var(--space-3xl);"><div class="container">
+  <div class="section-header"><h2>按省份浏览</h2></div>
+  <div class="bento-grid bento-3">
+    {% for p in provinces %}
+    <div class="province-card" onclick="alert('{{ p.name }}景点列表（原型）')" style="display:flex;align-items:center;gap:var(--space-md);padding:var(--space-md);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;">
+      <span style="font-size:1.5rem;">{{ p.flag }}</span><h3 style="font-size:0.9375rem;">{{ p.name }}</h3>
+      <span class="text-subtle text-sm" style="margin-left:auto;">{{ p.cities }} →</span>
+    </div>
+    {% endfor %}
+  </div>
+</div></section>
+{% endblock %}

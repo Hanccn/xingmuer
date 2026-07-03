@@ -1,0 +1,119 @@
+{% extends "base.html" %}{% load static %}{% block title %}我的规划 — 行木儿{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:var(--space-md);"><p class="text-sm" style="color:var(--ink-subtle);"><a href="/">首页</a> › 我的规划</p></div>
+<section style="padding:var(--space-lg) 0 var(--space-2xl);"><div class="container">
+  <div class="flex-between" style="margin-bottom:var(--space-lg);align-items:baseline;">
+    <div><h1>我的规划</h1><p class="text-muted text-sm">已选 {{ collections.count }} 个景点 · 拖拽调整顺序和优先级</p></div>
+    <a href="/discover/" class="btn btn-outline btn-sm">+ 添加景点</a>
+  </div>
+
+  {% for c in collections %}
+  <div class="card" style="display:flex;align-items:center;gap:var(--space-md);padding:var(--space-md) var(--space-lg);margin-bottom:var(--space-sm);">
+    <span class="rank-badge" style="width:28px;height:28px;border-radius:50%;background:{% if c.weight >= 3 %}var(--accent-soft){% else %}var(--border-light){% endif %};color:{% if c.weight >= 3 %}var(--accent){% else %}var(--ink-muted){% endif %};display:flex;align-items:center;justify-content:center;font-size:0.8125rem;font-weight:600;flex-shrink:0;">{{ forloop.counter }}</span>
+    <div style="flex:1;min-width:0;">
+      <div class="flex-between" style="align-items:baseline;">
+        <h3 style="font-size:1rem;">{{ c.poi.name }}</h3>
+        <span style="font-size:0.75rem;color:var(--ink-muted);">{{ c.poi.city.name }}</span>
+      </div>
+      <div style="display:flex;gap:var(--space-xs);margin-top:var(--space-xs);flex-wrap:wrap;">
+        {% if c.weight >= 3 %}<span class="tag tag-warm">重点</span>{% endif %}
+        {% for t in c.poi.tags|slice:":3" %}<span class="tag">{{ t }}</span>{% endfor %}
+        {% if c.poi.need_reservation %}<span class="tag tag-green">需预约</span>{% endif %}
+      </div>
+    </div>
+    <div style="display:flex;gap:var(--space-sm);align-items:center;flex-shrink:0;">
+      <form method="post" action="{% url 'api_collect_toggle' c.poi.id %}" style="display:inline;">
+        {% csrf_token %}<button class="btn btn-ghost btn-sm" style="color:var(--ink-subtle);">✕</button>
+      </form>
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty-state"><div class="empty-icon">📋</div><h3>还没有收藏景点</h3><p class="text-muted text-sm">去城市列表或发现页，把感兴趣的地方加入规划</p><a href="/" class="btn btn-primary btn-sm mt-lg">去发现</a></div>
+  {% endfor %}
+
+  {% if collections.count >= 3 %}
+  <div id="planMap" style="width:100%;height:300px;border-radius:var(--radius);margin-top:var(--space-lg);border:1px solid var(--border);"></div>
+  <div style="display:flex;gap:var(--space-md);margin-top:var(--space-lg);">
+    <div style="flex:1;"><button class="btn btn-primary" style="width:100%;height:52px;font-size:1rem;" onclick="analyzeLocation()">🎯 分析住宿选址</button><p class="text-subtle text-sm" style="margin-top:var(--space-xs);">基于景点分布，推荐最省交通成本的区域</p></div>
+    <div style="flex:1;"><button class="btn btn-outline" style="width:100%;height:52px;font-size:1rem;" onclick="showRouteConfig()">🗺️ 生成路线</button><p class="text-subtle text-sm" style="margin-top:var(--space-xs);">贪心排序+按天拆分，保存行程到我的行程</p></div>
+  </div>
+  <div id="locationResult" style="margin-top:var(--space-2xl);"></div>
+  <div id="routeResult" style="margin-top:var(--space-2xl);"></div>
+  <div id="routeConfig" style="display:none;margin-top:var(--space-2xl);"></div>
+  {% elif collections.count > 0 %}
+  <div class="card" style="margin-top:var(--space-xl);text-align:center;padding:var(--space-lg);border-style:dashed;">
+    <p class="text-muted text-sm">💡 再收藏 <strong>3</strong> 个以上景点即可解锁选址推荐和路线生成</p>
+  </div>
+  {% endif %}
+</div></section>
+{% endblock %}
+{% block extra_js %}
+<script>
+(function(){
+  var pois=[{% for c in collections %}{lng:{{ c.poi.lng }},lat:{{ c.poi.lat }},name:'{{ c.poi.name|escapejs }}'}{% if not forloop.last %},{% endif %}{% endfor %}];
+  if(pois.length){
+    var m=new AMap.Map('planMap',{zoom:12,center:[pois[0].lng,pois[0].lat]});
+    pois.forEach(function(p){m.add(new AMap.Marker({position:[p.lng,p.lat],title:p.name}));});
+    m.setFitView();
+  }
+})();
+
+function analyzeLocation(){
+  var d=document.getElementById("locationResult");
+  d.innerHTML='<div class="card" style="text-align:center;padding:var(--space-2xl);"><div class="spinner" style="margin:0 auto;"></div><p class="text-muted text-sm mt-md">正在分析景点分布，计算最优住宿区域…</p></div>';
+  d.scrollIntoView({behavior:'smooth'});
+  fetch("{% url 'api_location' %}",{method:"POST",headers:{"X-CSRFToken":"{{ csrf_token }}"}})
+    .then(function(r){return r.json()})
+    .then(function(data){
+      if(data.code!==0){d.innerHTML='<div class="card" style="text-align:center;padding:var(--space-lg);"><p class="text-muted">'+data.message+'</p></div>';return;}
+      var h='<h3 style="margin-bottom:var(--space-xs);">📍 住宿选址推荐</h3>';
+      h+='<p class="text-muted text-sm" style="margin-bottom:var(--space-lg);">{{ collections.count }} 个景点 · 高德实时交通计算</p>';
+      var medals=[{t:"🥇 最推荐",cl:"border:2px solid var(--accent);background:var(--accent-soft);"},{t:"🥈 备选",cl:""},{t:"🥉 备选",cl:""}];
+      data.data.recommendations.forEach(function(rec,i){
+        h+='<div class="card" style="margin-bottom:var(--space-sm);'+(medals[i]?medals[i].cl:'')+'">';
+        h+='<div class="flex-between" style="align-items:baseline;"><strong>'+rec.name+'</strong><span class="text-subtle text-sm">评分 '+rec.score.toFixed(0)+'</span></div>';
+        h+='<p class="text-muted text-sm">去 <strong>'+rec.within_20min+'</strong> 个景点 ≤20分钟 · 总驾车约 '+rec.total_min+' min</p>';
+        h+='</div>';
+      });
+      d.innerHTML=h;d.scrollIntoView({behavior:'smooth'});
+    })
+    .catch(function(e){d.innerHTML='<div class="card" style="text-align:center;padding:var(--space-lg);"><p class="text-muted">加载失败，请检查网络后重试</p></div>';});
+}
+function showRouteConfig(){
+  var d=document.getElementById("routeConfig");
+  d.style.display="block";
+  d.innerHTML='<div class="card"><h3 style="margin-bottom:var(--space-md);">路线设置</h3><div style="display:flex;gap:var(--space-md);align-items:flex-end;flex-wrap:wrap;"><div><label style="font-size:0.8125rem;font-weight:500;">出行天数</label><input type="number" id="rd" value="{% widthratio collections.count 2 1 %}" min="1" max="10" style="width:70px;height:44px;border:1px solid var(--border);border-radius:6px;padding:0 8px;font-size:0.9375rem;"></div><div><label style="font-size:0.8125rem;font-weight:500;">路线类型</label><select id="rt" style="height:44px;border:1px solid var(--border);border-radius:6px;padding:0 8px;font-size:0.9375rem;"><option value="compact">📅 紧凑型</option><option value="flexible">🗂️ 弹性型</option></select></div><div><button class="btn btn-primary btn-sm" onclick="generateRoute()">确认生成</button></div></div></div>';
+  d.scrollIntoView({behavior:'smooth'});
+}
+function generateRoute(){
+  var d=document.getElementById("routeResult"),cfg=document.getElementById("routeConfig");
+  d.innerHTML='<div class="card" style="text-align:center;padding:var(--space-2xl);"><div class="spinner" style="margin:0 auto;"></div><p class="text-muted text-sm mt-md">正在规划最优路线…</p></div>';
+  d.scrollIntoView({behavior:'smooth'});cfg.style.display='none';
+  var days=parseInt(document.getElementById("rd").value)||3,rt=document.getElementById("rt").value;
+  var locR=document.getElementById("locationResult");
+  var hotel="";
+  if(locR.querySelector("strong")) hotel=locR.querySelector("strong").textContent.replace(/[🥇🥈🥉]/g,"").trim();
+  fetch("{% url 'api_route' %}",{method:"POST",headers:{"X-CSRFToken":"{{ csrf_token }}","Content-Type":"application/x-www-form-urlencoded"},body:"days="+days+"&type="+rt+"&hotel="+encodeURIComponent(hotel)})
+    .then(function(r){return r.json()})
+    .then(function(data){
+      if(data.code!==0){d.innerHTML='<div class="card" style="text-align:center;padding:var(--space-lg);"><p class="text-muted">'+data.message+'</p></div>';return;}
+      var shareLink=data.data.share_code?'<a href="/s/'+data.data.share_code+'/" class="btn btn-outline btn-sm" style="margin-left:8px;" target="_blank">📱 手机查看</a>':'';var h='<div class="flex-between" style="align-items:baseline;margin-bottom:var(--space-md);"><h3>📍 '+data.data.city+' '+days+'日游</h3><div>'+ (data.data.trip_id?'<a href="/trip/'+data.data.trip_id+'/" class="btn btn-primary btn-sm">📋 行程详情</a>':'') +shareLink+'</div></div>';
+      data.data.days.forEach(function(day){
+        h+='<div class="card" style="margin-bottom:var(--space-md);">';
+        h+='<div style="font-size:1.0625rem;font-weight:600;padding-bottom:var(--space-sm);border-bottom:2px solid var(--accent);margin-bottom:var(--space-md);">Day '+day.day+' <span class="text-muted text-sm" style="font-weight:400;">驾车约'+day.drive_min+'min</span></div>';
+        day.pois.forEach(function(p,i){
+          h+='<div style="display:flex;gap:var(--space-md);align-items:flex-start;margin-bottom:var(--space-sm);">';
+          h+='<span style="width:28px;height:28px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;color:var(--accent);flex-shrink:0;">'+(i+1)+'</span>';
+          h+='<div style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:var(--space-md);"><strong>'+p.name+'</strong><span class="text-muted text-sm"> '+p.address+' · ⭐'+p.rating.toFixed(1)+'</span></div>';
+          h+='</div>';
+          if(p.next_drive_min) h+='<div style="text-align:center;font-size:0.75rem;color:var(--ink-subtle);padding:2px 0 8px;">🚗 '+p.next_drive_min+'分钟 →</div>';
+        });
+        h+='</div>';
+      });
+      h+='<p class="text-muted text-sm" style="text-align:center;">总驾车时间约 '+data.data.total_drive_min+' 分钟 · '+data.data.route_type+'</p>';
+      d.innerHTML=h;d.scrollIntoView({behavior:'smooth'});
+    })
+    .catch(function(e){d.innerHTML='<div class="card" style="text-align:center;padding:var(--space-lg);"><p class="text-muted">生成失败，请重试</p></div>';});
+}
+</script>
+{% endblock %}

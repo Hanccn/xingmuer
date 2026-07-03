@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFF8F3">
+<title>我的行程 — 行木儿</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .trip-card {
+    display: flex; gap: var(--space-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-lg);
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .trip-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+  .trip-card-img {
+    width: 120px; height: 100px; border-radius: var(--radius-sm);
+    object-fit: cover; flex-shrink: 0; background: var(--border-light);
+  }
+  .trip-card-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
+  .trip-card-info h3 { font-size: 1.0625rem; margin-bottom: 4px; }
+  .trip-card-info .meta { display: flex; gap: var(--space-md); flex-wrap: wrap; align-items: center; }
+  .trip-card-actions { display: flex; flex-direction: column; gap: var(--space-sm); justify-content: center; }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">跳转到主内容</a>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="navbar-brand"><span class="logo-icon">木</span> 行木儿</a>
+    <button class="hamburger" onclick="this.parentElement.classList.toggle('open')" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="navbar-links">
+      <a href="index.html">首页</a>
+      <a href="search.html">发现</a>
+      <a href="plan.html">我的规划 <span class="badge">3</span></a>
+      <a href="trips.html" class="active">我的行程</a>
+      <div class="nav-avatar" title="小王">王</div>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<div class="container" style="padding-top: var(--space-md);">
+  <p class="text-sm" style="color: var(--ink-subtle);"><a href="index.html">首页</a> › <span style="color: var(--ink-muted);">我的行程</span></p>
+</div>
+
+<section style="padding-top: var(--space-lg); padding-bottom: var(--space-2xl);">
+  <div class="container">
+
+    <div class="section-header" style="align-items:baseline;">
+      <div>
+        <h1>我的行程</h1>
+        <p class="text-muted text-sm">共 2 个已保存的行程</p>
+      </div>
+      <a href="plan.html" class="btn btn-primary btn-sm">+ 新建行程</a>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap: var(--space-md);">
+
+      <!-- Trip 1: 三亚 3日游 -->
+      <div class="trip-card" onclick="window.location.href='route.html'">
+        <img class="trip-card-img" src="images/sanyaa.jpg" alt="三亚" loading="lazy">
+        <div class="trip-card-info">
+          <h3>三亚 3 日游</h3>
+          <div class="meta">
+            <span style="color: var(--ink-muted);">📅 紧凑型</span>
+            <span style="color: var(--ink-muted);">🚗 驾车</span>
+            <span style="color: var(--ink-muted);">📍 住大东海</span>
+          </div>
+          <div style="margin-top: var(--space-xs);">
+            <span class="tag">天涯海角</span>
+            <span class="tag">蜈支洲岛</span>
+            <span class="tag">后海村</span>
+          </div>
+          <div class="meta" style="margin-top: var(--space-sm);">
+            <span class="text-subtle text-sm">7月15日出发</span>
+            <span style="color: var(--success); font-size:0.8125rem;">✅ Agent已检查</span>
+          </div>
+        </div>
+        <div class="trip-card-actions">
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); alert('分享码：8A3K2P（24h有效）')">📱 分享</button>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); alert('行程已删除（原型）')">🗑️</button>
+        </div>
+      </div>
+
+      <!-- Trip 2: 成都 2日漫游 -->
+      <div class="trip-card" onclick="window.location.href='route.html'">
+        <img class="trip-card-img" src="images/chengdu.jpg" alt="成都" loading="lazy">
+        <div class="trip-card-info">
+          <h3>成都 2 日漫游</h3>
+          <div class="meta">
+            <span style="color: var(--ink-muted);">🗂️ 弹性型</span>
+            <span style="color: var(--ink-muted);">🚌 公交</span>
+            <span style="color: var(--ink-muted);">📍 住春熙路</span>
+          </div>
+          <div style="margin-top: var(--space-xs);">
+            <span class="tag">宽窄巷子</span>
+            <span class="tag">大熊猫基地</span>
+            <span class="tag">锦里</span>
+            <span class="tag">+2個</span>
+          </div>
+          <div class="meta" style="margin-top: var(--space-sm);">
+            <span class="text-subtle text-sm">8月3日出发</span>
+            <span style="color: var(--ink-subtle); font-size:0.8125rem;">草稿</span>
+          </div>
+        </div>
+        <div class="trip-card-actions">
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); alert('分享码：K7M9X1（24h有效）')">📱 分享</button>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); alert('行程已删除（原型）')">🗑️</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty state hint -->
+    <div class="card" style="margin-top: var(--space-lg); text-align:center; padding: var(--space-lg); border-style:dashed;">
+      <p class="text-muted text-sm">
+        💡 还没有行程？去 <a href="plan.html">我的规划</a> 搜城市、勾景点、生成路线，然后保存到这里
+      </p>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer style="border-top: 1px solid var(--border-light); padding: var(--space-lg) 0; text-align: center;">
+  <p class="text-subtle" style="font-size:0.8125rem;">行木儿 · 让每次出发都胸有成竹</p>
+</footer>
+
+</body>
+</html>
