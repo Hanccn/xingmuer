@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFF8F3">
+<title>发现 — 行木儿</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .explore-hero { padding: var(--space-lg) 0 var(--space-lg); }
+  .explore-hero h1 { margin-bottom: var(--space-xs); }
+  .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: var(--space-sm); }
+  .category-chip {
+    display: flex; flex-direction: column; align-items: center; gap: var(--space-xs);
+    padding: var(--space-md) var(--space-sm); border-radius: var(--radius);
+    background: var(--surface); border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.15s; text-align: center;
+    font-family: var(--font-body);
+  }
+  .category-chip:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .category-chip .icon { font-size: 1.75rem; }
+  .category-chip .label { font-size: 0.8125rem; font-weight: 500; color: var(--ink); }
+  .province-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: var(--space-md); cursor: pointer; transition: border-color 0.15s;
+    display: flex; align-items: center; gap: var(--space-md);
+  }
+  .province-card:hover { border-color: var(--accent); }
+  .province-card .flag { font-size: 1.5rem; width: 40px; text-align: center; }
+  .province-card h3 { font-size: 0.9375rem; margin-bottom: 0; }
+  .trending-item {
+    display: flex; align-items: center; gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    cursor: pointer; transition: border-color 0.15s;
+  }
+  .trending-item:hover { border-color: var(--accent); }
+  .trending-item .rank { font-weight: 700; font-size: 1rem; color: var(--ink-subtle); width: 20px; }
+  .trending-item .trend-img {
+    width: 44px; height: 44px; border-radius: 6px; object-fit: cover; background: var(--border-light);
+  }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">跳转到主内容</a>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="navbar-brand"><span class="logo-icon">木</span> 行木儿</a>
+    <button class="hamburger" onclick="this.parentElement.classList.toggle('open')" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="navbar-links">
+      <a href="index.html">首页</a>
+      <a href="search.html" class="active">发现</a>
+      <a href="plan.html">我的规划 <span class="badge">3</span></a>
+      <a href="trips.html">我的行程</a>
+      <div class="nav-avatar" title="小王">王</div>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+
+<div class="container" style="padding-top: var(--space-md);">
+  <p class="text-sm" style="color: var(--ink-subtle);"><a href="index.html">首页</a> › <span style="color: var(--ink-muted);">发现</span></p>
+</div>
+
+<!-- ====== Hero ====== -->
+<section class="explore-hero">
+  <div class="container">
+    <h1>今天想去哪儿？</h1>
+    <p class="text-muted">不知道目的地？按你想玩的方式来找灵感。</p>
+  </div>
+</section>
+
+<!-- ====== Category Tags ====== -->
+<section style="padding-bottom: var(--space-xl);">
+  <div class="container">
+    <div class="section-header"><h2>按玩法发现</h2></div>
+    <div class="category-grid">
+      <div class="category-chip" onclick="window.location.href='city-list.html?city=三亚'"><span class="icon">🏖️</span><span class="label">海边躺平</span></div>
+      <div class="category-chip" onclick="window.location.href='city-list.html?city=成都'"><span class="icon">🍜</span><span class="label">美食之旅</span></div>
+      <div class="category-chip" onclick="window.location.href='city-list.html?city=大理'"><span class="icon">🏔️</span><span class="label">爬山徒步</span></div>
+      <div class="category-chip" onclick="window.location.href='city-list.html?city=西安'"><span class="icon">🏛️</span><span class="label">历史古都</span></div>
+      <div class="category-chip" onclick="window.location.href='city-list.html?city=重庆'"><span class="icon">🌃</span><span class="label">城市漫游</span></div>
+      <div class="category-chip" onclick="window.location.href='city-list.html?city=厦门'"><span class="icon">🚲</span><span class="label">文艺街区</span></div>
+      <div class="category-chip" onclick="window.location.href='theme.html'"><span class="icon">🍵</span><span class="label">主题灵感</span></div>
+      <div class="category-chip" onclick="alert('更多玩法即将上线')"><span class="icon">⛺</span><span class="label">露营户外</span></div>
+      <div class="category-chip" onclick="alert('更多玩法即将上线')"><span class="icon">🎿</span><span class="label">冰雪世界</span></div>
+      <div class="category-chip" onclick="alert('更多玩法即将上线')"><span class="icon">🌾</span><span class="label">古镇田园</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Trending ====== -->
+<section style="padding-bottom: var(--space-xl);">
+  <div class="container">
+    <div class="section-header">
+      <h2>大家最近在搜</h2>
+      <span class="text-subtle text-sm">基于真实搜索热度</span>
+    </div>
+    <div class="bento-grid bento-3">
+      <div class="trending-item" onclick="window.location.href='city-list.html?city=三亚'">
+        <span class="rank">1</span>
+        <img class="trend-img" src="images/sanyaa.jpg" alt="三亚" loading="lazy">
+        <div>
+          <h3 style="font-size:0.9375rem;">三亚</h3>
+          <span class="text-subtle" style="font-size:0.75rem;">🔥 本周热搜</span>
+        </div>
+      </div>
+      <div class="trending-item" onclick="window.location.href='city-list.html?city=大理'">
+        <span class="rank">2</span>
+        <img class="trend-img" src="images/dali.jpg" alt="大理" loading="lazy">
+        <div>
+          <h3 style="font-size:0.9375rem;">大理</h3>
+          <span class="text-subtle" style="font-size:0.75rem;">🔥 持续热门</span>
+        </div>
+      </div>
+      <div class="trending-item" onclick="window.location.href='city-list.html?city=成都'">
+        <span class="rank">3</span>
+        <img class="trend-img" src="images/chengdu.jpg" alt="成都" loading="lazy">
+        <div>
+          <h3 style="font-size:0.9375rem;">成都</h3>
+          <span class="text-subtle" style="font-size:0.75rem;">📈 上升中</span>
+        </div>
+      </div>
+      <div class="trending-item" onclick="window.location.href='city-list.html?city=西安'">
+        <span class="rank">4</span>
+        <img class="trend-img" src="images/xian.jpg" alt="西安" loading="lazy">
+        <div>
+          <h3 style="font-size:0.9375rem;">西安</h3>
+          <span class="text-subtle" style="font-size:0.75rem;">📈 上升中</span>
+        </div>
+      </div>
+      <div class="trending-item" onclick="window.location.href='city-list.html?city=厦门'">
+        <span class="rank">5</span>
+        <img class="trend-img" src="images/xiamen.jpg" alt="厦门" loading="lazy">
+        <div>
+          <h3 style="font-size:0.9375rem;">厦门</h3>
+          <span class="text-subtle" style="font-size:0.75rem;">🌸 春季热门</span>
+        </div>
+      </div>
+      <div class="trending-item" onclick="window.location.href='city-list.html?city=重庆'">
+        <span class="rank">6</span>
+        <img class="trend-img" src="images/chongqing.jpg" alt="重庆" loading="lazy">
+        <div>
+          <h3 style="font-size:0.9375rem;">重庆</h3>
+          <span class="text-subtle" style="font-size:0.75rem;">🍲 美食相关</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== By Province ====== -->
+<section style="padding-bottom: var(--space-3xl);">
+  <div class="container">
+    <div class="section-header"><h2>按省份浏览</h2></div>
+    <div class="bento-grid bento-3">
+      <div class="province-card" onclick="alert('海南景点列表（原型）')"><span class="flag">🌴</span><h3>海南</h3><span class="text-subtle text-sm" style="margin-left:auto;">三亚、海口 →</span></div>
+      <div class="province-card" onclick="alert('四川景点列表（原型）')"><span class="flag">🐼</span><h3>四川</h3><span class="text-subtle text-sm" style="margin-left:auto;">成都、乐山 →</span></div>
+      <div class="province-card" onclick="alert('云南景点列表（原型）')"><span class="flag">🦚</span><h3>云南</h3><span class="text-subtle text-sm" style="margin-left:auto;">大理、丽江 →</span></div>
+      <div class="province-card" onclick="alert('陕西景点列表（原型）')"><span class="flag">🏯</span><h3>陕西</h3><span class="text-subtle text-sm" style="margin-left:auto;">西安、华山 →</span></div>
+      <div class="province-card" onclick="alert('福建景点列表（原型）')"><span class="flag">🌊</span><h3>福建</h3><span class="text-subtle text-sm" style="margin-left:auto;">厦门、泉州 →</span></div>
+      <div class="province-card" onclick="alert('重庆景点列表（原型）')"><span class="flag">🌆</span><h3>重庆</h3><span class="text-subtle text-sm" style="margin-left:auto;">渝中、武隆 →</span></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer style="border-top: 1px solid var(--border-light); padding: var(--space-lg) 0; text-align: center;">
+  <p class="text-subtle" style="font-size:0.8125rem;">行木儿 · 让每次出发都胸有成竹</p>
+</footer>
+
+</body>
+</html>

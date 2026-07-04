@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FFF8F3">
+<title>我的规划 — 行木儿</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  /* plan page extras */
+  .view-toggle {
+    display: inline-flex; background: var(--border-light); border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .view-toggle button {
+    padding: 6px 14px; border: none; background: transparent; cursor: pointer;
+    font-size: 0.875rem; font-family: var(--font); color: var(--ink-muted);
+    transition: all 0.15s;
+  }
+  .view-toggle button.active {
+    background: var(--surface); color: var(--ink); font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .sort-handle { cursor: grab; color: var(--ink-subtle); user-select: none; font-size: 1.25rem; }
+  .sort-handle:active { cursor: grabbing; }
+  .drag-indicator {
+    display: flex; flex-direction: column; gap: 2px; padding: 4px;
+    cursor: grab;
+  }
+  .drag-indicator span {
+    width: 14px; height: 2px; background: var(--ink-subtle); border-radius: 1px;
+  }
+  .rank-badge {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--border-light); color: var(--ink-muted);
+    font-size: 0.75rem; font-weight: 600; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0;
+  }
+  .rank-badge.must { background: #DBEAFE; color: var(--accent); }
+  .location-card {
+    border: 2px solid var(--accent); background: var(--tint-blue);
+    border-radius: var(--radius); padding: var(--space-lg);
+    position: relative;
+  }
+  .location-card .rank {
+    position: absolute; top: -10px; left: var(--space-lg); background: var(--accent);
+    color: #fff; font-size: 0.75rem; font-weight: 600; padding: 2px 10px;
+    border-radius: 10px;
+  }
+  .input-row {
+    display: flex; gap: var(--space-md); align-items: flex-end; flex-wrap: wrap;
+  }
+  .input-group { display: flex; flex-direction: column; gap: 4px; }
+  .input-group label { font-size: 0.8125rem; color: var(--ink-muted); font-weight: 500; }
+  .input-group select, .input-group input {
+    height: 44px; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 0 var(--space-md); font-family: var(--font); font-size: 0.9375rem;
+    color: var(--ink); background: var(--surface); outline: none;
+  }
+  .input-group select:focus, .input-group input:focus { border-color: var(--accent); }
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">跳转到主内容</a>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="index.html" class="navbar-brand">
+      <span class="logo-icon">木</span> 行木儿
+    </a>
+    <button class="hamburger" onclick="this.parentElement.classList.toggle('open')" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="navbar-links">
+      <a href="index.html">首页</a>
+      <a href="search.html">发现</a>
+      <a href="plan.html" class="active">我的规划 <span class="badge">3</span></a>
+      <a href="trips.html">我的行程</a>
+      <div class="nav-avatar" title="小王">王</div>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+<div class="container" style="padding-top: var(--space-md);">
+  <p class="text-sm" style="color: var(--ink-subtle);">
+    <a href="index.html">首页</a> ›
+    <a href="city-list.html?city=三亚">三亚</a> ›
+    <span style="color: var(--ink-muted);">我的规划</span>
+  </p>
+</div>
+
+<section style="padding-top: var(--space-lg); padding-bottom: var(--space-2xl);">
+  <div class="container">
+    <div class="flex-between" style="margin-bottom: var(--space-lg); align-items: baseline;">
+      <div>
+        <h1>我的三亚规划</h1>
+        <p class="text-muted text-sm">已选 3 个景点 · 拖拽调整顺序和重要程度</p>
+      </div>
+      <div class="view-toggle" id="viewToggle">
+        <button class="active" onclick="switchView('list')">📋 列表</button>
+        <button onclick="switchView('map')">🗺️ 地图</button>
+      </div>
+    </div>
+
+    <!-- ====== List View ====== -->
+    <div id="listView">
+      <div style="display:flex; flex-direction:column; gap: var(--space-sm); margin-bottom: var(--space-lg);">
+
+        <!-- Item 1: 一定要去 -->
+        <div class="card" style="display:flex; align-items:center; gap: var(--space-md); padding: var(--space-md) var(--space-lg);" draggable="true">
+          <div class="drag-indicator" title="拖拽排序"><span></span><span></span><span></span></div>
+          <span class="rank-badge must">1</span>
+          <div style="flex:1; min-width:0;">
+            <div class="flex-between" style="align-items:baseline;">
+              <h3 style="font-size:1rem;">天涯海角</h3>
+              <span class="tag tag-gold">一定要去</span>
+            </div>
+            <p class="text-subtle text-sm">海滩 · 自然风光 · 建议 2-3h</p>
+          </div>
+          <div style="display:flex; gap: var(--space-sm); align-items: center;">
+            <select style="border:1px solid var(--border); border-radius:6px; padding:3px 6px; font-size:0.8125rem; color:var(--ink);" onchange="updateWeight(this,1)">
+              <option value="3" selected>重点</option>
+              <option value="1">普通</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="removeItem(1)" title="移除">✕</button>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="card" style="display:flex; align-items:center; gap: var(--space-md); padding: var(--space-md) var(--space-lg);">
+          <div class="drag-indicator" title="拖拽排序"><span></span><span></span><span></span></div>
+          <span class="rank-badge">2</span>
+          <div style="flex:1; min-width:0;">
+            <div class="flex-between" style="align-items:baseline;">
+              <h3 style="font-size:1rem;">蜈支洲岛</h3>
+              <span class="tag tag-green">需预约</span>
+            </div>
+            <p class="text-subtle text-sm">海岛 · 潜水 · 建议 4-6h</p>
+          </div>
+          <div style="display:flex; gap: var(--space-sm); align-items: center;">
+            <select style="border:1px solid var(--border); border-radius:6px; padding:3px 6px; font-size:0.8125rem; color:var(--ink);" onchange="updateWeight(this,2)">
+              <option value="1" selected>普通</option>
+              <option value="3">重点</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="removeItem(2)" title="移除">✕</button>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="card" style="display:flex; align-items:center; gap: var(--space-md); padding: var(--space-md) var(--space-lg);">
+          <div class="drag-indicator" title="拖拽排序"><span></span><span></span><span></span></div>
+          <span class="rank-badge">3</span>
+          <div style="flex:1; min-width:0;">
+            <div class="flex-between" style="align-items:baseline;">
+              <h3 style="font-size:1rem;">后海村</h3>
+            </div>
+            <p class="text-subtle text-sm">海滩 · 游泳 · 建议 3-4h</p>
+          </div>
+          <div style="display:flex; gap: var(--space-sm); align-items: center;">
+            <select style="border:1px solid var(--border); border-radius:6px; padding:3px 6px; font-size:0.8125rem; color:var(--ink);" onchange="updateWeight(this,3)">
+              <option value="1" selected>普通</option>
+              <option value="3">重点</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" onclick="removeItem(3)" title="移除">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add more CTA -->
+      <div class="card" style="text-align:center; padding: var(--space-md); border-style:dashed; cursor:pointer; margin-bottom: var(--space-xl);" onclick="alert('返回城市景点列表（原型示意）')">
+        <span class="text-muted text-sm">+ 添加更多景点</span>
+      </div>
+
+      <!-- ====== Action buttons ====== -->
+      <div style="display:flex; gap: var(--space-md); flex-wrap: wrap;">
+
+        <!-- Analyze Location -->
+        <div style="flex:1; min-width: 280px;">
+          <button class="btn btn-primary" style="width:100%;" onclick="analyzeLocation()">
+            🎯 分析住宿选址
+          </button>
+          <p class="text-subtle text-sm" style="margin-top: var(--space-xs);">基于已选 3 个景点的分布，推荐最优住宿区域</p>
+        </div>
+
+        <!-- Generate Route -->
+        <div style="flex:1; min-width: 280px;">
+          <button class="btn btn-outline" style="width:100%;" id="routeBtn" onclick="prepareRoute()">
+            🗺️ 生成路线
+          </button>
+          <p class="text-subtle text-sm" style="margin-top: var(--space-xs);">按天生成行程，支持拖拽调整</p>
+        </div>
+      </div>
+
+      <!-- Route config (hidden until prepare) -->
+      <div id="routeConfig" style="display:none; margin-top: var(--space-lg);">
+        <div class="card">
+          <h3 style="margin-bottom: var(--space-md);">路线设置</h3>
+          <div class="input-row">
+            <div class="input-group">
+              <label>出行天数</label>
+              <input type="number" value="3" min="1" max="10" style="width:80px;">
+            </div>
+            <div class="input-group">
+              <label>出行方式</label>
+              <select>
+                <option>🚗 驾车</option>
+                <option>🚌 公交</option>
+                <option>🚗+🚌 混合</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>路线类型</label>
+              <select>
+                <option>📅 紧凑型（按时排列）</option>
+                <option>🗂️ 弹性型（按区域打包）</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="generateRoute()" style="align-self: flex-end;">确认生成</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location result (populated by analyze) -->
+      <div id="locationResult" style="display:none; margin-top: var(--space-lg);"></div>
+    </div>
+
+    <!-- ====== Map View ====== -->
+    <div id="mapView" style="display:none;">
+      <div class="bento-grid bento-2">
+        <div class="map-placeholder">
+          <span style="font-size:3rem;">🗺️</span>
+          <p class="text-muted">高德地图 — 多点标记</p>
+          <div style="display:flex; gap: var(--space-md); text-align:left;">
+            <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--accent);margin-right:4px;"></span> 天涯海角</div>
+            <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--accent);margin-right:4px;"></span> 蜈支洲岛</div>
+            <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--accent);margin-right:4px;"></span> 后海村</div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex; flex-direction:column; gap: var(--space-sm);">
+            <div class="card" style="font-size:0.9375rem; display:flex; justify-content:space-between;">
+              <span>🟢 天涯海角</span><span class="text-muted text-sm">一定要去</span>
+            </div>
+            <div class="card" style="font-size:0.9375rem; display:flex; justify-content:space-between;">
+              <span>🔵 蜈支洲岛</span><span class="text-muted text-sm">需预约</span>
+            </div>
+            <div class="card" style="font-size:0.9375rem; display:flex; justify-content:space-between;">
+              <span>⚪ 后海村</span><span class="text-muted text-sm">—</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="analyzeLocation()" style="width:100%; margin-top: var(--space-lg);">🎯 分析住宿选址</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<div id="toast" class="toast" style="display:none;"></div>
+
+<script>
+function switchView(view) {
+  document.getElementById('listView').style.display = view === 'list' ? 'block' : 'none';
+  document.getElementById('mapView').style.display = view === 'map' ? 'block' : 'none';
+  const btns = document.querySelectorAll('#viewToggle button');
+  btns[0].classList.toggle('active', view === 'list');
+  btns[1].classList.toggle('active', view === 'map');
+}
+
+function updateWeight(sel, id) { /* prototype: no-op */ }
+
+function removeItem(id) {
+  showToast('景点已移除（原型示意）');
+}
+
+function analyzeLocation() {
+  const result = document.getElementById('locationResult');
+  result.style.display = 'block';
+  result.innerHTML = `
+    <div style="margin-bottom: var(--space-md);">
+      <h3 style="margin-bottom: var(--space-sm);">📍 住宿选址推荐</h3>
+      <p class="text-muted text-sm">基于你选的 3 个景点分布，推荐以下住宿区域：</p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap: var(--space-md);">
+      <div class="location-card">
+        <span class="rank">🥇 最推荐</span>
+        <div class="flex-between" style="align-items:baseline; margin-bottom: var(--space-sm);">
+          <h3>大东海区域</h3>
+        </div>
+        <p style="margin-bottom: var(--space-xs);">去 <strong>3/3</strong> 个景点 ≤20 分钟</p>
+        <p class="text-subtle text-sm">天涯海角 12min · 蜈支洲岛 18min · 后海村 15min</p>
+        <p class="text-subtle text-sm">区域酒店多、餐饮便利、近海滩</p>
+      </div>
+      <div class="card">
+        <div class="flex-between" style="align-items:baseline; margin-bottom: var(--space-sm);">
+          <h3>🥈 三亚湾区域</h3>
+        </div>
+        <p style="margin-bottom: var(--space-xs);">去 <strong>2/3</strong> 个景点 ≤25 分钟</p>
+        <p class="text-subtle text-sm">天涯海角 8min · 蜈支洲岛 25min · 后海村 30min</p>
+        <p class="text-subtle text-sm">离机场近，酒店均价更低</p>
+      </div>
+      <div class="card">
+        <div class="flex-between" style="align-items:baseline; margin-bottom: var(--space-sm);">
+          <h3>🥉 后海村区域</h3>
+        </div>
+        <p style="margin-bottom: var(--space-xs);">去 <strong>1/3</strong> 个景点 ≤20 分钟</p>
+        <p class="text-subtle text-sm">后海村 5min · 天涯海角 30min · 蜈支洲岛 35min</p>
+        <p class="text-subtle text-sm">高端酒店聚集，想泡酒店可以选</p>
+      </div>
+    </div>
+  `;
+  result.scrollIntoView({ behavior: 'smooth' });
+}
+
+function prepareRoute() {
+  const cfg = document.getElementById('routeConfig');
+  cfg.style.display = 'block';
+  cfg.scrollIntoView({ behavior: 'smooth' });
+}
+
+function generateRoute() {
+  window.location.href = 'route.html';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2000);
+}
+</script>
+</body>
+</html>
