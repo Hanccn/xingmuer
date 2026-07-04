@@ -5,9 +5,15 @@ BASE = "https://restapi.amap.com/v3"
 KEY = settings.AMAP_KEY
 
 def _get(path, params):
+    if not KEY:
+        return {}
     params["key"] = KEY
-    r = requests.get(f"{BASE}{path}", params=params, timeout=5)
-    return r.json()
+    try:
+        r = requests.get(f"{BASE}{path}", params=params, timeout=5)
+        r.raise_for_status()
+        return r.json()
+    except (requests.RequestException, ValueError):
+        return {}
 
 def search_poi(keywords, city=None, types="风景名胜", page=1, offset=20):
     p = {"keywords": keywords, "types": types, "offset": offset, "page": page, "extensions": "all"}

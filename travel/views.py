@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+import requests
 from . import models, amap
 
 
@@ -297,13 +298,16 @@ def api_agent_search(request):
     prompt = f'你是旅游搜索助手。从用户输入提取约束推荐目的地。\n用户："{q}"\n严格JSON：{{"constraints":[],"candidate_regions":[],"tags":[],"confidence":0.5}}\n3-5个中国城市。'
 
     try:
+        if not settings.DEEPSEEK_KEY:
+            raise ValueError("DeepSeek key is not configured")
         r = requests.post("https://api.deepseek.com/v1/chat/completions",
             headers={"Authorization":f"Bearer {settings.DEEPSEEK_KEY}","Content-Type":"application/json"},
             json={"model":"deepseek-chat","messages":[{"role":"user","content":prompt}],"temperature":0.3,"max_tokens":300}, timeout=10)
+        r.raise_for_status()
         c = r.json()["choices"][0]["message"]["content"].strip()
         if c.startswith("```"): c = c.split("\n",1)[1].rsplit("\n```",1)[0]
         p = _json.loads(c)
-    except Exception:
+    except (requests.RequestException, KeyError, IndexError, ValueError, _json.JSONDecodeError):
         p = _fallback_parse(q)
 
     all_pois = []
@@ -311,6 +315,8 @@ def api_agent_search(request):
         for x in amap.search_poi(keywords=rg, types="风景名胜", offset=5):
             all_pois.append({"name":x.get("name",""),"city":x.get("cityname",""),"address":x.get("address",""),
                 "rating":x.get("biz_ext",{}).get("rating","0"),"match_reason":rg})
+    if not all_pois:
+        all_pois = _fallback_agent_pois(p.get("candidate_regions", []))
 
     return JsonResponse({"code":0,"data":{"query":q,"constraints":p.get("constraints",[]),"tags":p.get("tags",[]),
         "confidence":p.get("confidence",0.5),"pois":all_pois[:15]}})
@@ -321,6 +327,36 @@ def _fallback_parse(q):
     for kw, v in [("周末","时间-周末"),("爬山","活动-爬山"),("海边","偏好-海边"),("美食","偏好-美食"),("小众","偏好-小众"),("古城","偏好-古城")]:
         if kw in q: c.append(v)
     return {"constraints":c,"candidate_regions":["大理","成都","杭州","厦门","桂林"],"tags":t,"confidence":0.4}
+
+
+def _fallback_agent_pois(candidate_regions):
+    """外部 API 不可用时返回可演示的本地/静态推荐，避免 Agent 搜索空白或 500。"""
+    pois = []
+    for rg in candidate_regions[:4]:
+        local_pois = models.POI.objects.filter(city__name=rg).order_by("-rating")[:4]
+        for poi in local_pois:
+            pois.append({
+                "name": poi.name,
+                "city": poi.city.name,
+                "address": poi.address,
+                "rating": str(poi.rating),
+                "match_reason": rg,
+            })
+
+    if pois:
+        return pois
+
+    static_by_city = {
+        "大理": [("苍山洗马潭索道", "苍山地质公园", "4.6"), ("洱海生态廊道", "大理市环海西路", "4.7")],
+        "成都": [("人民公园", "青羊区少城路", "4.6"), ("东郊记忆", "成华区建设南路", "4.5")],
+        "杭州": [("九溪十八涧", "西湖区龙井村", "4.7"), ("灵隐寺", "西湖区法云弄", "4.8")],
+        "厦门": [("鼓浪屿", "思明区鼓浪屿", "4.7"), ("沙坡尾", "思明区大学路", "4.5")],
+        "桂林": [("漓江风景名胜区", "灵川县磨盘山码头", "4.6"), ("龙脊梯田", "龙胜各族自治县", "4.7")],
+    }
+    for rg in candidate_regions[:4]:
+        for name, address, rating in static_by_city.get(rg, []):
+            pois.append({"name": name, "city": rg, "address": address, "rating": rating, "match_reason": rg})
+    return pois
 
 
 # --- helpers ---
