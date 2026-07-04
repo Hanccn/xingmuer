@@ -50,8 +50,8 @@
 {% block extra_js %}
 {% if trip.share_code %}
 <script>
-new QRCode(document.getElementById("qrcode"),{text:"http://127.0.0.1:8000/s/{{ trip.share_code }}/",width:160,height:160});
-function copyShare(){navigator.clipboard.writeText("http://127.0.0.1:8000/s/{{ trip.share_code }}/");showToast("链接已复制，发送到手机即可打开");}
+new QRCode(document.getElementById("qrcode"),{text:window.location.origin+"/s/{{ trip.share_code }}/",width:160,height:160});
+function copyShare(){navigator.clipboard.writeText(window.location.origin+"/s/{{ trip.share_code }}/");showToast("链接已复制，发送到手机即可打开");}
 </script>
 {% endif %}
 {% if trip.route_data.days %}
@@ -61,7 +61,27 @@ function copyShare(){navigator.clipboard.writeText("http://127.0.0.1:8000/s/{{ t
   if(allPois.length){
     var m=new AMap.Map('tripMap',{zoom:12,center:[allPois[0].lng,allPois[0].lat]});
     allPois.forEach(function(p){m.add(new AMap.Marker({position:[p.lng,p.lat],title:p.name}));});
-    m.setFitView();
+    // 驾车路线：每天不同颜色
+    var colors=['#E8734A','#4A90D9','#50B86C','#F5A623','#9B59B6','#E85D75','#5DADE2'];
+    var dayPois=[{% for day in trip.route_data.days %}[{% for p in day.pois %}{lng:{{ p.lng }},lat:{{ p.lat }}}{% if not forloop.last %},{% endif %}{% endfor %}]{% if not forloop.last %},{% endif %}{% endfor %}];
+    var pending=0;
+    dayPois.forEach(function(pois,di){
+      var color=colors[di%colors.length];
+      for(var i=0;i<pois.length-1;i++){
+        pending++;
+        (function(o,d,c){new AMap.Driving({map:null}).search(
+          new AMap.LngLat(o.lng,o.lat),new AMap.LngLat(d.lng,d.lat),
+          function(status,result){
+            if(status==='complete'&&result.routes.length){
+              var path=[];result.routes[0].steps.forEach(function(s){s.path.forEach(function(p){path.push([p.lng,p.lat]);});});
+              new AMap.Polyline({path:path,strokeColor:c,strokeWeight:4,strokeOpacity:0.55,map:m});
+            }
+            pending--;if(!pending)m.setFitView();
+          });
+        })(pois[i],pois[i+1],color);
+      }
+    });
+    if(!pending)m.setFitView();
   }
 })();
 </script>

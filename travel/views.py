@@ -257,19 +257,16 @@ def api_generate_route(request):
         total_time += day_time
 
     # Save trip with share code
-    import random, string, datetime as dt
+    import random, string
+    from django.utils import timezone
     code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-    expires = dt.datetime.now() + dt.timedelta(hours=24)
-    if hotel:
-        trip = models.Trip.objects.create(
-            user=request.user, city=pois[0][0].city, name=f"{cn}{days}日游",
-            hotel_area=hotel, route_type=route_type, total_days=days,
-            route_data={"days": result_days}, status="saved",
-            share_code=code, share_expires_at=expires)
-        trip_id = trip.id
-    else:
-        trip_id = None
-        code = None
+    expires = timezone.now() + timezone.timedelta(hours=24)
+    trip = models.Trip.objects.create(
+        user=request.user, city=pois[0][0].city, name=f"{cn}{days}日游",
+        hotel_area=hotel, route_type=route_type, total_days=days,
+        route_data={"days": result_days}, status="saved",
+        share_code=code, share_expires_at=expires)
+    trip_id = trip.id
 
     return JsonResponse({"code":0,"data":{"city":cn,"days":result_days,"total_drive_min":total_time,"trip_id":trip_id,"share_code":code,"route_type":route_type}})
 
@@ -277,10 +274,15 @@ def api_generate_route(request):
 def trip_share(request, code):
     """公开查看——分享码访问，无需登录"""
     from django.utils import timezone
+    from django.conf import settings
     trip = get_object_or_404(models.Trip, share_code=code.upper())
     if trip.share_expires_at and trip.share_expires_at < timezone.now():
         return render(request, "travel/share_expired.html", {"trip": trip})
-    return render(request, "travel/trip_share.html", {"trip": trip})
+    return render(request, "travel/trip_share.html", {
+        "trip": trip,
+        "AMAP_JS_KEY": settings.AMAP_JS_KEY,
+        "AMAP_JS_SECRET": settings.AMAP_JS_SECRET,
+    })
 
 
 # --- Agent 搜索 ---

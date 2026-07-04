@@ -13,6 +13,13 @@
   <h1 style="font-size:1.5rem;">{{ trip.name }}</h1>
   <p class="text-muted text-sm">📍 {{ trip.hotel_area|default:"待定" }} · {{ trip.get_route_type_display }} · {{ trip.total_days }}天</p>
 </div>
+
+{% if trip.route_data.days %}
+<div class="card" style="margin:0 var(--space-md) var(--space-md);">
+  <div id="shareMap" style="width:100%;height:350px;border-radius:var(--radius);"></div>
+</div>
+{% endif %}
+
 {% for day in trip.route_data.days %}
 <div class="card" style="margin:0 var(--space-md) var(--space-md);">
   <div style="font-size:1.0625rem;font-weight:600;border-bottom:2px solid var(--accent);padding-bottom:var(--space-sm);margin-bottom:var(--space-md);">Day {{ day.day }} <span class="text-muted text-sm" style="font-weight:400;">驾车约 {{ day.drive_min }}min</span></div>
@@ -29,11 +36,41 @@
   📲 添加到主屏幕，离线也能看这条行程
 </div>
 <div id="toast" class="toast" style="display:none;"></div>
+<script>window._AMapSecurityConfig={securityJsCode:'{{ AMAP_JS_SECRET }}'};</script>
+<script src="https://webapi.amap.com/maps?v=2.0&key={{ AMAP_JS_KEY }}&plugin=AMap.Driving,AMap.Geocoder"></script>
 <script>
 function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(function(){t.style.display='none'},2000);}
 var deferredPrompt;
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').style.display='block';});
 function installPWA(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(function(r){deferredPrompt=null;document.getElementById('installBanner').style.display='none';showToast(r.outcome==='accepted'?'已添加到主屏幕 ✅':'可以稍后再加');});}}
+{% if trip.route_data.days %}
+(function(){
+  var allPois=[{% for day in trip.route_data.days %}{% for p in day.pois %}{lng:{{ p.lng }},lat:{{ p.lat }},name:'{{ p.name|escapejs }}'},{% endfor %}{% endfor %}];
+  if(!allPois.length)return;
+  var m=new AMap.Map('shareMap',{zoom:12,center:[allPois[0].lng,allPois[0].lat]});
+  allPois.forEach(function(p){m.add(new AMap.Marker({position:[p.lng,p.lat],title:p.name}));});
+  var colors=['#E8734A','#4A90D9','#50B86C','#F5A623','#9B59B6','#E85D75','#5DADE2'];
+  var dayPois=[{% for day in trip.route_data.days %}[{% for p in day.pois %}{lng:{{ p.lng }},lat:{{ p.lat }}}{% if not forloop.last %},{% endif %}{% endfor %}]{% if not forloop.last %},{% endif %}{% endfor %}];
+  var pending=0;
+  dayPois.forEach(function(pois,di){
+    var color=colors[di%colors.length];
+    for(var i=0;i<pois.length-1;i++){
+      pending++;
+      (function(o,d,c){new AMap.Driving({map:null}).search(
+        new AMap.LngLat(o.lng,o.lat),new AMap.LngLat(d.lng,d.lat),
+        function(status,result){
+          if(status==='complete'&&result.routes.length){
+            var path=[];result.routes[0].steps.forEach(function(s){s.path.forEach(function(p){path.push([p.lng,p.lat]);});});
+            new AMap.Polyline({path:path,strokeColor:c,strokeWeight:4,strokeOpacity:0.55,map:m});
+          }
+          pending--;if(!pending)m.setFitView();
+        });
+      })(pois[i],pois[i+1],color);
+    }
+  });
+  if(!pending)m.setFitView();
+})();
+{% endif %}
 </script>
 </body>
 </html>
