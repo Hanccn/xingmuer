@@ -276,9 +276,9 @@ def api_generate_route(request):
 
 def trip_share(request, code):
     """公开查看——分享码访问，无需登录"""
-    from datetime import datetime as dtt
+    from django.utils import timezone
     trip = get_object_or_404(models.Trip, share_code=code.upper())
-    if trip.share_expires_at and trip.share_expires_at < dtt.now():
+    if trip.share_expires_at and trip.share_expires_at < timezone.now():
         return render(request, "travel/share_expired.html", {"trip": trip})
     return render(request, "travel/trip_share.html", {"trip": trip})
 

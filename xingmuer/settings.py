@@ -1,7 +1,9 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-dev-only")
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
@@ -71,7 +73,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# API keys from environment
+# API keys from environment (set in .env or Railway env vars)
 AMAP_KEY = os.getenv("AMAP_KEY", "")
 AMAP_JS_KEY = os.getenv("AMAP_JS_KEY", "")
 AMAP_JS_SECRET = os.getenv("AMAP_JS_SECRET", "")
