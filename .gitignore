@@ -7,3 +7,9 @@ staticfiles/
 .vscode/
 .idea/
 *.log
+interview_pack/
+01-需求分析文档.md
+02-PRD产品需求文档.md
+2026-07-03_需求分析文档编写.md
+2026-07-04_功能完善与Bug修复.md
+项目进度交接文档.md
